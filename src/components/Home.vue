@@ -1,12 +1,21 @@
 <template>
   <div>
     Home 组件
+    <el-button type="info" @click="logout">退出</el-button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Home',
+  methods: {
+    logout () {
+      // 清空sessionStorage中的token
+      window.sessionStorage.clear()
+      // 跳转到登录页面
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
 
