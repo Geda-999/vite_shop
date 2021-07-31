@@ -20,7 +20,7 @@
 
         <!-- 登录按钮区域-->
         <el-form-item class="btns">
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click="login">登录</el-button>
           <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
@@ -36,8 +36,8 @@ export default {
       // 这是登录表单的数据绑定对象
       loginForm: {
         // ESLint：字符串必须使用单引号。(quotes)
-        username: 'Zs',
-        password: '123'
+        username: 'admin',
+        password: '123456'
       },
       // 这是表单验证规则对象
       loginFormRules: {
@@ -51,7 +51,7 @@ export default {
           {
             min: 3,
             max: 10,
-            message: '长度在 3 到 10 个字符',
+            message: '用户名长度在 3 到 10 个字符',
             trigger: 'blur'
           }
         ],
@@ -63,9 +63,9 @@ export default {
             trigger: 'blur'
           },
           {
-            min: 8,
+            min: 6,
             max: 16,
-            message: '长度在 8 到 16 个字符',
+            message: '密码长度在 6 到 16 个字符',
             trigger: 'blur'
           }
         ]
@@ -79,6 +79,27 @@ export default {
     resetLoginForm: function () {
       // console.log(this);
       this.$refs.loginFormRef.resetFields()
+    },
+    /**
+     * 实现登录前表单数据的预验证
+     */
+    login: function () {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        console.log(valid)
+        if (!valid) {
+          return
+        }
+        const { data: res } = await this.$http.post('login', this.loginForm)
+        const result = await this.$http.post('login', this.loginForm)
+        console.log(result.data.meta.status)
+        console.log('-----------------------')
+        console.log(res)
+        if (res.meta.status !== 200) {
+          return this.$message.error('登录失败')
+        } else {
+          return this.$message.success('登录成功')
+        }
+      })
     }
   }
 
