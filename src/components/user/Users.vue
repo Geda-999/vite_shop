@@ -33,16 +33,27 @@
                     <!-- 作用域插槽 -->
                     <!--  slot-scope:接收数据-->
                     <template slot-scope = "scope">
-                        <!-- 拿到数据 -->
+                        <!-- 能拿到所有数据 -->
                         <!-- {{scope.row}} -->
-                        <el-switch v-model="scope.row.mg_state">
-                        </el-switch>
+                        <el-switch v-model="scope.row.mg_state"></el-switch>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作"></el-table-column>
+                <el-table-column label="操作">
+                    <!-- 作用域插槽渲染操作 -->
+                    <template>
+                        <!-- 修改按钮 -->
+                        <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+                        <!-- 删除按钮 -->
+                        <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+                        <!-- 分配角色按钮 -->
+                        <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+                           <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
             </el-table>
         </el-card>
-    </div>
+   </div>
 </template>
 
 <script>
