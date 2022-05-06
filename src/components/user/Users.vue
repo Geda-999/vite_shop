@@ -24,12 +24,21 @@
             <!-- 用户列表区域 -->
             <!-- :data是数据源  border：边框线 stripe：各行变色效果-->
             <el-table :data="userlist" border stripe class="mt-4 text-xs">
-                <el-table-column type="index"></el-table-column>
+                <el-table-column type="index"></el-table-column><!-- 表格添加索引列 -->
                 <el-table-column label="姓名" prop="username"></el-table-column>
                 <el-table-column label="邮箱" prop="email"></el-table-column>
                 <el-table-column label="电话" prop="mobile"></el-table-column>
                 <el-table-column label="角色" prop="role_name"></el-table-column>
-                <el-table-column label="状态" prop="mg_state"></el-table-column>
+                <el-table-column label="状态">
+                    <!-- 作用域插槽 -->
+                    <!--  slot-scope:接收数据-->
+                    <template slot-scope = "scope">
+                        <!-- 拿到数据 -->
+                        <!-- {{scope.row}} -->
+                        <el-switch v-model="scope.row.mg_state">
+                        </el-switch>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作"></el-table-column>
             </el-table>
         </el-card>
