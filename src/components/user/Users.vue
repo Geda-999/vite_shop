@@ -18,7 +18,7 @@
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-button type="primary">添加用户</el-button>
+                    <el-button type="primary" @click="addDialgVisible = true">添加用户</el-button>
                 </el-col>
             </el-row>
 
@@ -66,6 +66,20 @@
             class="mt-4">
             </el-pagination>
         </el-card>
+
+        <!-- 添加用户的对话框 -->
+        <el-dialog
+            title="提示"
+            :visible.sync="addDialgVisible"
+            width="50%">
+            <!-- 内容主体区 -->
+            <span>这是一段信息</span>
+            <!-- 底部按钮区 -->
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addDialgVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addDialgVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
    </div>
 </template>
 
@@ -83,7 +97,9 @@ export default {
       },
       // 数据保存到
       userlist: [], // 获取所有用户列表
-      total: 0 // 总数据调数
+      total: 0, // 总数据调数
+      // 控制添加用户对话框的显示与隐藏
+      addDialgVisible: false
     }
   },
   // Vue的生命周期
