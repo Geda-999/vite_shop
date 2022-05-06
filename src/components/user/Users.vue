@@ -52,11 +52,24 @@
                     </template>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页区域 -->
+            <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pagenum"
+            :page-sizes="[1, 2, 5, 10]"
+            :page-size="queryInfo.pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            class="mt-4">
+            </el-pagination>
         </el-card>
    </div>
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -65,7 +78,7 @@ export default {
       queryInfo: {
         query: '', // 字串
         pagenum: 1, // 当前页码
-        pagesize: 2// 每页显示条数
+        pagesize: 2// 当前每页显示多少条数据
       },
       // 数据保存到
       userlist: [], // 获取所有用户列表
@@ -95,6 +108,20 @@ export default {
       // 这下就给他们赋值啦！
       this.userlist = res.data.users
       this.total = res.data.total
+    },
+    // 监听 pagesize改变的事件
+    handleSizeChange(newSize) {
+      console.log(newSize)
+      this.queryInfo.pagesize = newSize // pagesize: 2// 当前每页显示多少条数据
+      this.getUserList()
+    },
+    // 监听 页码值 改变的事件
+    handleCurrentChange(newPage) {
+      console.log(newPage)
+      // 赋值
+      this.queryInfo.pagenum = newPage
+      // 获取数据
+      this.getUserList()
     }
 
   }
