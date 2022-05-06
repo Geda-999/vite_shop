@@ -100,6 +100,29 @@
 
 export default {
   data() {
+    // 验证邮箱的规则
+    var checkEmail = (rule, value, cb) => {
+      // 验证邮箱的正则表达式
+      const regEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+      if (regEmail.test(value)) {
+        // 合法邮箱
+        return cb()
+      }
+      cb(new Error('请输入合法的邮箱'))
+    }
+
+    // 验证手机号的规则
+    var checkMobile = (rule, value, cb) => {
+      // 验证手机号的正则表达式
+      const regMobile = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/
+
+      if (regMobile.test(value)) {
+        return cb()
+      }
+
+      cb(new Error('请输入合法的手机号'))
+    }
     return {
       // 定义get详情参数
       // 获取用户列表的参数对象
@@ -131,10 +154,12 @@ export default {
           { min: 6, max: 15, message: '用户名的长度在6~15个字符之间', trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' }
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEmail, trigger: 'blur' }
         ],
         mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
         ]
       }
     }
