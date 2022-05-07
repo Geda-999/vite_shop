@@ -43,7 +43,7 @@
                     <!-- 作用域插槽渲染操作 -->
                     <template>
                         <!-- 修改按钮 -->
-                        <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog()"></el-button>
                         <!-- 删除按钮 -->
                         <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
                         <!-- 分配角色按钮 -->
@@ -92,6 +92,18 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addDialgVisible = false">取 消</el-button>
                 <el-button type="primary" @click="addUser">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 修改用户的对话框 -->
+        <el-dialog
+            title="修改用户"
+            :visible.sync="editDialogVisible"
+            width="50%">
+            <span>这是一段信息</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
    </div>
@@ -162,7 +174,9 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ]
-      }
+      },
+      // 控制修改用户对话框的显示与隐藏
+      editDialogVisible: false
     }
   },
   // Vue的生命周期
@@ -235,6 +249,10 @@ export default {
         // 重新获取用户列表数据
         this.getUserList()
       })
+    },
+    // 展示编辑用户的对话框
+    showEditDialog() {
+      this.editDialogVisible = true
     }
 
   }
