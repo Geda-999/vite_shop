@@ -41,7 +41,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <!-- 作用域插槽渲染操作 -->
-                    <template>
+                    <template slot-scope="scope">
                         <!-- 修改按钮 -->
                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
                         <!-- 删除按钮 -->
@@ -100,7 +100,21 @@
             title="修改用户"
             :visible.sync="editDialogVisible"
             width="50%">
-            <span>这是一段信息</span>
+            <el-form :model="editFrom" :rules="editFromRules" ref="editFromRef" label-width="70px">
+                <el-form-item label="用户名">
+                    <el-input v-model="editFrom.username" disabled></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form :model="editFrom" :rules="editFromRules" ref="editFromRef" label-width="70px">
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="editFrom.email"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form :model="editFrom" :rules="editFromRules" ref="editFromRef" label-width="70px">
+                <el-form-item label="手机" prop="mobile">
+                    <el-input v-model="editFrom.mobile"></el-input>
+                </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
@@ -178,7 +192,18 @@ export default {
       // 控制修改用户对话框的显示与隐藏
       editDialogVisible: false,
       // 查询到的用户信息对象
-      aditFrom: {}
+      editFrom: {},
+      // 修改表单的验证规则对象
+      editFromRules: {
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEmail, trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ]
+      }
     }
   },
   // Vue的生命周期
@@ -261,7 +286,7 @@ export default {
         return this.$message.error('查询用户信息失败！')
       }
 
-      // 编辑后保存到editFrom
+      // 编辑后保存到editFrom表单数据上
       this.editFrom = res.data
       this.editDialogVisible = true
     }
