@@ -105,20 +105,16 @@
                 <el-form-item label="用户名">
                     <el-input v-model="editFrom.username" disabled></el-input>
                 </el-form-item>
-            </el-form>
-            <el-form :model="editFrom" :rules="editFromRules" ref="editFromRef" label-width="70px">
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="editFrom.email"></el-input>
                 </el-form-item>
-            </el-form>
-            <el-form :model="editFrom" :rules="editFromRules" ref="editFromRef" label-width="70px">
                 <el-form-item label="手机" prop="mobile">
                     <el-input v-model="editFrom.mobile"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="editUserInfo">确 定</el-button>
             </span>
         </el-dialog>
    </div>
@@ -259,7 +255,7 @@ export default {
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
     },
-    // 点击按钮，添加新用户的表单预校验
+    // 点击按钮，添加新用户的表单预设校验
     addUser() {
       this.$refs.addFormRef.validate(async valid => {
         // console.log(valid)
@@ -291,9 +287,15 @@ export default {
       this.editFrom = res.data
       this.editDialogVisible = true
     },
-    // 监听修改用户对话框的关闭事件
+    // 监听修改用户对话框的关闭事件 【修改用户-实现修改用户表单的重置操作】
     editDialogClosed() {
-      this.$refs.editFormRef.resetFields()
+      this.$refs.editFromRef.resetFields()
+    },
+    // 修改用户信息并提交表单 【表单预设校验】
+    editUserInfo() {
+      this.$refs.editFromRef.validate(valid => {
+        console.log(valid)
+      })
     }
 
   }
