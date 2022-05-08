@@ -99,7 +99,8 @@
         <el-dialog
             title="修改用户"
             :visible.sync="editDialogVisible"
-            width="50%">
+            width="50%"
+            @close="editDialogClosed">
             <el-form :model="editFrom" :rules="editFromRules" ref="editFromRef" label-width="70px">
                 <el-form-item label="用户名">
                     <el-input v-model="editFrom.username" disabled></el-input>
@@ -289,6 +290,10 @@ export default {
       // 编辑后保存到editFrom表单数据上
       this.editFrom = res.data
       this.editDialogVisible = true
+    },
+    // 监听修改用户对话框的关闭事件
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields()
     }
 
   }

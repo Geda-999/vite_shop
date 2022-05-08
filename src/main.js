@@ -10,8 +10,11 @@ import './assets/css/Tailwind.css'
 
 // 导入字体图标
 import './assets/fonts/iconfont.css'
-//
+// 引入axios请求
+
 import axios from 'axios'
+
+// 全局注册axios，使用方法 this.$http
 
 Vue.prototype.$http = axios
 // 配置请求的根路径
