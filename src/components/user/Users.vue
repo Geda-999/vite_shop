@@ -45,7 +45,7 @@
                         <!-- 修改按钮 -->
                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
                         <!-- 删除按钮 -->
-                        <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
                         <!-- 分配角色按钮 -->
                         <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
                            <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -318,6 +318,32 @@ export default {
         // 提示修改成功
         this.$message.success('更新用户信息成功！')
       })
+    },
+    // 根据id删除对应的用户信息
+    async removeUserById(id) {
+    //   console.log(id)
+    // 弹框询问用户是否测试数据
+      const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err) // 简写法
+      // }).catch(err => { return err }) 正常写法
+
+      /*
+        如果末个函数调用的结果返回值是Promise，咋们就是用 async await 来进行优化
+        console.log(res)
+      */
+
+      // 如果用户确认删除，则返回值为字符串 confirm
+      // 如果用户取消了删除，则返回值为字符串 cancel
+      //   console.log(confirmResult)
+
+      // 判断环节
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已取消删除')
+      }
+      console.log('确认了删除')
     }
 
   }
