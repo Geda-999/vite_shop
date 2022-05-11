@@ -19,7 +19,14 @@
             <!-- 角色列表区域 -->
             <el-table :data="rolelist" border stripe>
                 <!-- 展开列 type="expand" -->
-                <el-table-column type="expand"></el-table-column>
+                <el-table-column type="expand">
+                    <template slot-scope="scope">
+                     <!-- 结构信息美化 对象 -->
+                     <pre>
+                        {{scope.row}}
+                     </pre>
+                    </template>
+                </el-table-column>
                 <!-- 索引列 -->
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="角色名称" prop="roleName"></el-table-column>
