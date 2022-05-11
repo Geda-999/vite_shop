@@ -9,7 +9,7 @@
 
         <!-- 卡片视图区域 -->
         <el-card>
-            <el-table :data="rightsList" border>
+            <el-table :data="rightsList" border stripe>
                 <el-table-column type="index"></el-table-column>
                 <el-table-column label="权限名称" prop="authName"></el-table-column>
                 <el-table-column label="路径" prop="path"></el-table-column>
@@ -41,6 +41,7 @@ export default {
   methods: {
     //   获取权限列表
     async getRightsList() {
+      // 发起请求
       const { data: res } = await this.$http.get('rights/list')
       //   console.log(res)
       if (res.meta.status !== 200) {
