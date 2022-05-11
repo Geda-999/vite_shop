@@ -20,7 +20,21 @@
             <el-table :data="rolelist" border stripe>
                 <!-- 展开列 type="expand" -->
                 <el-table-column type="expand">
+                    <!-- 插槽  -->
                     <template slot-scope="scope">
+                    <!-- Layout 布局 -->
+                    <el-row v-for="item1 in scope.row.children" :key="item1.id">
+                        <!-- 总共有24列  :span="5"让他站五列 -->
+                        <!-- 渲染一级权限 -->
+                        <el-col :span="5">
+                            <!-- Tag 标签 -->
+                            <el-tag>
+                                {{item1.authName}}
+                            </el-tag>
+                        </el-col>
+                        <!-- 渲染二级和三级权限 -->
+                        <el-col :span="19"></el-col>
+                    </el-row>
                      <!-- 结构信息美化 对象 -->
                      <pre>
                         {{scope.row}}
