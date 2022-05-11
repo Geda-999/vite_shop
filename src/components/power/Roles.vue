@@ -23,7 +23,7 @@
                     <!-- 插槽  -->
                     <template slot-scope="scope">
                     <!-- Layout 布局 -->
-                    <el-row :class="['bdbottom', i1 === 0 ? 'bdtop' : '']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
+                    <el-row :class="['bdbottom', i1 === 0 ? 'bdtop' : '', 'flex','items-center']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
                         <!-- 总共有24列  :span="5"让他站五列 -->
                         <!-- 渲染一级权限 -->
                         <el-col :span="5">
@@ -35,7 +35,7 @@
                         <!-- 渲染二级和三级权限 -->
                         <el-col :span="19">
                             <!-- 通过 for 循环 嵌套渲染二级权限 -->
-                            <el-row :class="i2 === 0 ? '' : 'bdtop'" v-for="(item2, i2) in item1.children" :key="item2.id">
+                            <el-row :class="[i2 === 0 ? '' : 'bdtop', 'flex','items-center']" v-for="(item2, i2) in item1.children" :key="item2.id">
                                 <el-col :span="6">
                                     <el-tag type="success">{{item2.authName}}</el-tag>
                                     <i class="el-icon-caret-right"></i>
@@ -49,9 +49,9 @@
                         </el-col>
                     </el-row>
                      <!-- 结构信息美化 对象 -->
-                     <pre>
+                     <!-- <pre>
                         {{scope.row}}
-                     </pre>
+                     </pre> -->
                     </template>
                 </el-table-column>
                 <!-- 索引列 -->
