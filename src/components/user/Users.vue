@@ -124,8 +124,20 @@
             :visible.sync="setRoleDialogVisible"
             width="50%">
             <div>
-                <p class="mb-3">当前的用户：{{userinfo.username}}</p>
-                <p>当前的角色：{{userinfo.role_name}}</p>
+                <p class="mb-5">当前的用户：{{userinfo.username}}</p>
+                <p class="mb-5">当前的角色：{{userinfo.role_name}}</p>
+                <p>
+                    分配新角色：
+                    <!-- 通过 v-model双向绑定具体的值上 里面所有选项 通过for循环来生成 :label是咋们所看到的本文 :value是咋们真正选中的值 -->
+                    <el-select v-model="selectedRoleId" placeholder="请选择">
+                        <el-option
+                            v-for="item in rolesList"
+                            :key="item.id"
+                            :label="item.roleName"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                </p>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="setRoleDialogVisible = false">取 消</el-button>
@@ -224,7 +236,10 @@ export default {
       userinfo: [],
 
       // 所有角色的数据列表
-      rolesList: []
+      rolesList: [],
+
+      // 已选中的角色Id值
+      selectedRoleId: ''
     }
   },
   // Vue的生命周期
