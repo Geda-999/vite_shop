@@ -294,6 +294,21 @@ export default {
 
     // 点击为角色分配权限
     async allotRights() {
+      /**
+       * ... 代表展开运算符
+       * ...this.$refs.treeRef.getCheckedKeys
+       */
+
+      /**
+       * bug点 : 出错地点 ...this.$refs.treeRef.getCheckedKeys,
+       * 原因:  少写了  getCheckedKeys() 后面的 括号. 出现了下面的错误信息
+       * [Vue warn]: Error in v-on handler (Promise/async): "TypeError: Invalid attempt to spread non-iterable instance.
+       * In order to be iterable, non-array objects must have a [Symbol.iterator]() method."
+       * #
+       * TypeError: Invalid attempt to spread non-iterable instance.
+       * In order to be iterable, non-array objects must have a [Symbol.iterator]() method.
+       */
+
       // 在这个数组中获取所有被选中、叶子节点的key和半选中节点的key,
       const keys = [
         // 我们把两个数组给合并成一个新数组了
