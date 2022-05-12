@@ -1,6 +1,27 @@
 <template>
     <div>
-        商品分类组件
+    <!-- 面包屑导航栏区域 -->
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="mb-4 text-xs">
+            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>商品管理</el-breadcrumb-item>
+            <el-breadcrumb-item>商品分类</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <!-- 卡片视图区域 -->
+        <el-card>
+            <!-- 一行 -->
+            <el-row>
+                <!-- 一列 -->
+                <el-col>
+                    <!-- 添加按钮 -->
+                    <el-button type="primary">添加分类</el-button>
+                </el-col>
+            </el-row>
+
+            <!-- 表格区域 -->
+
+            <!-- 分页区域 -->
+        </el-card>
     </div>
 </template>
 
@@ -8,13 +29,39 @@
 export default {
   data() {
     return {
-
+      // 查询条件
+      querInfo: {
+        type: 3, // 值
+        pagenum: 1, // 当前页码值
+        pagesize: 5 // 每页显示多少条数据
+      },
+      // 商品分类的数据列表，默认为空
+      cateList: [],
+      //  总数据条数
+      total: 0
     }
   },
   created() {
-
+    // 咋们来调用一个方法
+    this.getCateList()
   },
   methods: {
+    // 获取商品分类数据
+    async getCateList() {
+      // 发起一个get的请求  请求方法：get 请求路径：categories
+      const { data: res } = await this.$http.get('categories', { params: this.querInfo })
+
+      //   接着咋们要【判断这的请求是否成功
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取商品分类失败！')
+      }
+
+      console.log(res.data)
+      // 把数据列表，赋值给 cateList
+      this.cateList = res.data.result
+      // 为总数据条数赋值  赋值一下值
+      this.total = res.data.total
+    }
 
   }
 }
