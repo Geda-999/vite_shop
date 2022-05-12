@@ -75,7 +75,7 @@
             :visible.sync="setRightDialogVisible"
             width="50%">
             <!-- 树形控制 通过data：绑定数据源，通过props: 指定咋们的属性绑定对象 -->
-            <el-tree :data="rightslist" :props="treeProps"></el-tree>
+            <el-tree :data="rightslist" :props="treeProps" show-checkbox node-key="id" default-expand-all></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="setRightDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="setRightDialogVisible = false">确 定</el-button>
