@@ -63,11 +63,24 @@
                     <template>
                         <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
                         <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
-                        <el-button size="mini" type="warning" icon="el-icon-setting">分配权限</el-button>
+                        <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog">分配权限</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </el-card>
+
+        <!-- 分配权限的对话框 -->
+        <el-dialog
+            title="分配权限"
+            :visible.sync="setRightDialogVisible"
+            width="50%">
+            <!-- 树形控制 通过data：绑定数据源，通过props: 指定咋们的属性绑定对象 -->
+            <el-tree :data="rightslist" :props="treeProps"></el-tree>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="setRightDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="setRightDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -76,7 +89,18 @@ export default {
   data() {
     return {
       // 所有角色列表数据
-      rolelist: []
+      rolelist: [],
+
+      // 控制分配权限对话框显示与隐藏
+      setRightDialogVisible: false,
+      // 所有权限的数据
+      rightslist: [],
+
+      // 树形控件的属性绑定对象
+      treeProps: {
+        label: 'authName', // 看到那个属性的值
+        children: 'children' // 通过父子节点 来实现咋们的嵌套了
+      }
     }
   },
   // 生命周期函数
@@ -102,6 +126,7 @@ export default {
       this.rolelist = res.data
       console.log(this.rolelist)
     },
+
     // 根据Id删除对应的权限
     async removeRightByIs(role, rightId) {
       // 弹框提示用户是否要删除
@@ -131,6 +156,27 @@ export default {
       // 咋们可以当前这个角色信息 重新赋值一下权限就行了
       // 注意点 一定要 把服务器返回最新的权限，直接赋值给当前角色了children属性【这种就防止整个列表的刷新】
       role.children = res.data
+    },
+
+    // 展示分配权限的对话框
+    async showSetRightDialog() {
+      // 获取所有权限的数据
+      const { data: res } = await this.$http.get('rights/tree')
+
+      //   然后咋们就来判断了
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取权限数据失败！')
+      }
+
+      //   赋值环节
+      // 把获取到的权限数据保存到 data 中
+      this.rightslist = res.data
+
+      // 验证获取成功的打印一下
+      console.log(this.rightslist)
+
+      // 当前分配权限点击的时候就弹出对话框来
+      this.setRightDialogVisible = true
     }
   }
 }
