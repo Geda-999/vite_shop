@@ -73,12 +73,13 @@
         <el-dialog
             title="分配权限"
             :visible.sync="setRightDialogVisible"
-            width="50%">
+            width="50%"
+            @close="setRightDialogClosed">
             <!-- 树形控制 通过data：绑定数据源，通过props: 指定咋们的属性绑定对象 -->
-            <el-tree :data="rightslist" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys"></el-tree>
+            <el-tree :data="rightslist" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="setRightDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="setRightDialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="allotRights">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -102,7 +103,7 @@ export default {
         children: 'children' // 通过父子节点 来实现咋们的嵌套了
       },
       // 默认选中的节点Id值数据组
-      defkeys: [],
+      defKeys: [],
       // 当前即将分配权限的角色id
       roleId: ''
     }
@@ -164,6 +165,8 @@ export default {
 
     // 展示分配权限的对话框
     async showSetRightDialog(role) {
+      // 把 id 保存到data中
+      this.roleId = role.id
       // 获取所有权限的数据
       const { data: res } = await this.$http.get('rights/tree')
 
@@ -193,8 +196,46 @@ export default {
         return arr.push(node.id)
       }
 
-      // 递归循环节
+      // 递归环节
       node.children.forEach(item => this.getLeafKeys(item, arr))
+    },
+
+    // 监听分配权限对话框的关闭事件 [注意这个小bug哦]
+    setRightDialogClosed() {
+      this.defKeys = [] // 重新赋值就好了
+    },
+
+    // 点击为角色分配权限
+    async allotRights() {
+      // 在这个数组中获取所有被选中、叶子节点的key和半选中节点的key,
+      const keys = [
+        // 我们把两个数组给合并成一个新数组了
+        ...this.$refs.treeRef.getCheckedKeys(),
+        ...this.$refs.treeRef.getHalfCheckedKeys()
+      ]
+
+      // 打印这个新新数组
+      //   console.log(keys) // 获取所有id
+
+      // 已英文的逗号来拼接的字符串
+      const idStr = keys.join(',')
+
+      // 发起请求  请求方法：post
+      const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, { rids: idStr })
+
+      // 紧接着 咋们判断环节来
+      if (res.meta.status !== 200) {
+        return this.$message.error('分配权限失败！')
+      }
+
+      // 如果没有return出去就更新权限成功了
+      this.$message.success('分配权限成功！')
+
+      // 成功之后咋们需要做重新刷新 这个数据列表
+      this.getRoleList()
+
+      // 刷新数据列表之后呢，咋们还要把整个对话框给隐藏
+      this.setRightDialogVisible = false
     }
   }
 }
