@@ -28,7 +28,7 @@
                         <!-- 渲染一级权限 -->
                         <el-col :span="5">
                             <!-- Tag 标签 -->
-                            <el-tag>{{item1.authName}}</el-tag>
+                            <el-tag closable @close="removeRightByIs(scope.row, item1.id)">{{item1.authName}}</el-tag>
                             <!-- 三角形 icon -->
                             <i class="el-icon-caret-right"></i>
                         </el-col>
@@ -37,11 +37,11 @@
                             <!-- 通过 for 循环 嵌套渲染二级权限 -->
                             <el-row :class="[i2 === 0 ? '' : 'bdtop', 'flex','items-center']" v-for="(item2, i2) in item1.children" :key="item2.id">
                                 <el-col :span="6">
-                                    <el-tag type="success">{{item2.authName}}</el-tag>
+                                    <el-tag type="success" closable @close="removeRightByIs(scope.row, item2.id)">{{item2.authName}}</el-tag>
                                     <i class="el-icon-caret-right"></i>
                                 </el-col>
                                 <el-col :span="18">
-                                    <el-tag type="warning" v-for="item3 in item2.children" :key="item3.id" closable @close="removeRightByIs()">
+                                    <el-tag type="warning" v-for="item3 in item2.children" :key="item3.id" closable @close="removeRightByIs(scope.row, item3.id)">
                                         {{item3.authName}}
                                     </el-tag>
                                 </el-col>
@@ -103,7 +103,7 @@ export default {
       console.log(this.rolelist)
     },
     // 根据Id删除对应的权限
-    async removeRightByIs() {
+    async removeRightByIs(role, rightId) {
       // 弹框提示用户是否要删除
       const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -111,11 +111,26 @@ export default {
         type: 'warning'
       }).catch(err => err)
 
+      // 结果的判断用户是否删除对应的权限
       if (confirmResult !== 'confirm') {
         return this.$message.info('取消了删除！')
       }
+      //   console.log('确认删除')
 
-      console.log('确认删除')
+      // 接下来就发起删除的请求了
+      const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+
+      // 判断环节了
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除权限失败！')
+      }
+
+      // 删除成功 就重新刷新数据列表【不建议去调这个函数，会发生页面完整渲染】
+      //   this.getRoleList()
+
+      // 咋们可以当前这个角色信息 重新赋值一下权限就行了
+      // 注意点 一定要 把服务器返回最新的权限，直接赋值给当前角色了children属性【这种就防止整个列表的刷新】
+      role.children = res.data
     }
   }
 }
