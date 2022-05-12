@@ -12,7 +12,7 @@
             <!-- 添加角色按钮区域 -->
             <el-row>
                 <el-col>
-                    <el-button type="primary">添加角色</el-button>
+                    <el-button type="primary" @click="addRoleDialogVisible = true">添加角色</el-button>
                 </el-col>
             </el-row>
 
@@ -61,8 +61,11 @@
                 <el-table-column label="操作" width="300px">
                     <!-- 插槽 Button 按钮 -->
                     <template  slot-scope="scope">
+                        <!-- 编辑按钮 -->
                         <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+                        <!-- 删除按钮 -->
                         <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+                        <!-- 分配权限 -->
                         <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog(scope.row)">分配权限</el-button>
                     </template>
                 </el-table-column>
@@ -76,16 +79,46 @@
             width="50%"
             @close="setRightDialogClosed">
             <!-- 树形控制 通过data：绑定数据源，通过props: 指定咋们的属性绑定对象 -->
+            <!-- 树形控件
+                bug点:  写出:data="rolesList"  改成 :data="rightsList"
+                #
+                注意点: 这个  node-key="id"  id 猜测是从
+                        :data="rightsList"绑定的rightsList: []数组对象取出来每单个对象的id
+            -->
             <el-tree :data="rightslist" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="setRightDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="allotRights">确 定</el-button>
             </span>
         </el-dialog>
+
+            <!-- 添加角色的对话框 -->
+        <el-dialog
+            :visible.sync="addRoleDialogVisible"
+            title="添加角色"
+            width="35%"
+            @close="addDialogClosed">
+            <!-- 内容主体区域 -->
+            <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="70px">
+                <!-- prop=username 对应了 addFormRules中的username校验规则-->
+                <el-form-item label="角色名称" label-width="85px" prop="roleName">
+                <el-input v-model="addForm.roleName"></el-input>
+                </el-form-item>
+                <el-form-item label="角色描述" label-width="85px" prop="roleDesc">
+                <el-input v-model="addForm.roleDesc"></el-input>
+                </el-form-item>
+            </el-form>
+            <!-- 底部区域 -->
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addRoleDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addRole">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -105,7 +138,36 @@ export default {
       // 默认选中的节点Id值数据组
       defKeys: [],
       // 当前即将分配权限的角色id
-      roleId: ''
+      roleId: '',
+      // 控制添加角色对话框的显示与隐藏
+      addRoleDialogVisible: false,
+      // 添加角色
+      addForm: {
+        roleName: '',
+        roleDesc: ''
+      },
+      addFormRules: {
+        roleName: [
+          {
+            required: true,
+            message: '请输入角色名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 6,
+            message: '角色名称长度在 2 到 6 个字符',
+            trigger: 'blur'
+          }
+        ],
+        roleDesc: [
+          {
+            required: true,
+            message: '请输入角色描述',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   // 生命周期函数
@@ -236,6 +298,33 @@ export default {
 
       // 刷新数据列表之后呢，咋们还要把整个对话框给隐藏
       this.setRightDialogVisible = false
+    },
+
+    // 添加角色
+    addRole() {
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) return
+        // 可以发起添加用户的网络请求
+        const { data: res } = await this.$http.post('roles', this.addForm)
+
+        // 判断环节
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加角色失败！')
+        }
+
+        // 如果没有return出去就添加成功了
+        this.$message.success('添加用户成功！')
+
+        // 成功之后咋们需要做 重新刷新 这个数据列表
+        this.getRoleList()
+
+        // 隐藏添加用户的对话框
+        this.addRoleDialogVisible = false
+      })
+    },
+    // 监听 添加角色对话框的关闭事件
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields()
     }
   }
 }
