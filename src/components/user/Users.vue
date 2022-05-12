@@ -48,7 +48,7 @@
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
                         <!-- 分配角色按钮 -->
                         <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-                           <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                           <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -115,6 +115,21 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="editUserInfo">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 分配角色的对话框 -->
+        <el-dialog
+            title="分配角色"
+            :visible.sync="setRoleDialogVisible"
+            width="50%">
+            <div>
+                <p class="mb-3">当前的用户：{{userinfo.username}}</p>
+                <p>当前的角色：{{userinfo.role_name}}</p>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="setRoleDialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
    </div>
@@ -200,7 +215,16 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ]
-      }
+      },
+
+      // 控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible: false,
+
+      // 需要被分配角色的用户信息
+      userinfo: [],
+
+      // 所有角色的数据列表
+      rolesList: []
     }
   },
   // Vue的生命周期
@@ -353,6 +377,26 @@ export default {
 
       this.$message.success('删除用户成功！')
       this.getUserList()
+    },
+    // 展示分配角色的对话框
+    async setRole(userinfo) {
+      // 拿到userinfo之后 咋们就保存到data 共咋们页面去使用
+      this.userinfo = userinfo
+
+      // 在展示对话框之前，获取所有角色的列表
+      //  发起请求 请求方法：get 请求路径：roles
+      const { data: res } = await this.$http.get('roles')
+
+      // 判断环节
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败！')
+      }
+
+      // 如果没有return出去就 保存到一个数组 共咋们页面使用
+      this.rolesList = res.data
+
+      // 当点击分配角色 显示对话框
+      this.setRoleDialogVisible = true
     }
 
   }
