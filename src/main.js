@@ -10,6 +10,9 @@ import './assets/css/Tailwind.css'
 
 // 导入字体图标
 import './assets/fonts/iconfont.css'
+// 导入第三方插件
+import TreeTable from 'vue-table-with-tree-grid'
+
 // 引入axios请求
 
 import axios from 'axios'
@@ -28,6 +31,9 @@ axios.interceptors.request.use((config) => {
 
 
 Vue.config.productionTip = false
+
+// 全局注册
+Vue.component('tree-table', TreeTable)
 
 new Vue({
   router,
