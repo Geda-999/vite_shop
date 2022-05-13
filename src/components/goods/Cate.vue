@@ -21,7 +21,7 @@
             <!-- 表格区域 -->
             <!-- 导入第三方插件库 -->
             <!-- data: 是数据源   selection-type：是复选框  expand-type：展开栏 show-index：是否显示数据索引[序号]  index-text：数据索引名称[#]  border：是否显示纵向边框  show-row-hover：鼠标悬停时，是否高亮当前行 -->
-            <tree-table :data="cateList" :columns="columns" :selection-type="false" :expand-type="false" :show-index="true" index-text="#" border :show-row-hover="false">
+            <tree-table class="mt-4" :data="cateList" :columns="columns" :selection-type="false" :expand-type="false" :show-index="true" index-text="#" border :show-row-hover="false">
                 <!-- 定义插槽 -->
                 <!-- scope：接收这一列数据 -->
                 <!-- 是否有效 -->
@@ -42,7 +42,7 @@
                 <!-- 操作 -->
                 <!-- size:图标大小 type：图标颜色 -->
                 <!-- scope：接收这一列数据 -->
-                <template slot="opt" slot-scope="scope">
+                <template slot="opt" slot-scope="">
                     <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
                     <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
                 </template>
@@ -50,6 +50,15 @@
             </tree-table>
 
             <!-- 分页区域 -->
+            <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="querInfo.pagenum"
+                :page-sizes="[3, 5, 10, 15]"
+                :page-size="querInfo.pagesize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+            </el-pagination>
         </el-card>
     </div>
 </template>
@@ -116,6 +125,22 @@ export default {
       this.cateList = res.data.result
       // 为总数据条数赋值  赋值一下值
       this.total = res.data.total
+    },
+
+    // 监听 pagesize 改变
+    handleSizeChange(newSize) {
+      // 赋值
+      this.querInfo.pagesize = newSize
+      // 赋值完毕立即刷新数据列表
+      this.getCateList()
+    },
+
+    // 监听 pagenum 改变
+    handleCurrentChange(newPage) {
+      // 赋值
+      this.querInfo.pagenum = newPage
+      // 赋值完毕立即刷新数据列表
+      this.getCateList()
     }
 
   }
