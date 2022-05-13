@@ -139,7 +139,9 @@ export default {
         cat_name: [
           { required: true, message: '请输入分类名称', trigger: 'blur' }
         ]
-      }
+      },
+      // 父级分类的列表
+      parentCateList: []
 
     }
   },
@@ -182,7 +184,25 @@ export default {
     },
     // 点击按钮，展示添加分类的对话框
     showAddCateDialog() {
+      // 先获取父级分类的数据列表
+      this.getParentCateList()
+      // 再展示出对话框
       this.addCateDialogVisible = true
+    },
+    // 获取父级分类的数据列表
+    async getParentCateList() {
+      // 调用this.$http 发起一个get请求
+      const { data: res } = await this.$http.get('categories', { params: { type: 2 } })
+
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取父级分类数据失败！')
+      }
+
+      console.log(res.data)
+
+      // 给parentCateList赋值
+      //  保存到parentCateList数组中共咋们页面使用
+      this.parentCateList = res.data
     }
 
   }
