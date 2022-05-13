@@ -97,6 +97,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -249,7 +250,33 @@ export default {
 
     // 点击按钮，添加新的分类
     addCate() {
-      console.log(this.addCateForm)
+    //   console.log(this.addCateForm)
+    // 预验证   调用validate方法
+      this.$refs.addCateFormRef.validate(async valid => {
+        //   如果非valid 就预校验失败 就return出去
+        if (!valid) return
+
+        // 如果没有return出去就校验成功
+        // 发起post请求 ，添加这个功能
+        const { data: res } = await this.$http.post('categories', this.addCateForm)
+
+        // 判断环节
+        if (res.meta.status !== 201) {
+          // 失败就提示用户
+          return this.$message.error('添加分类失败！')
+        }
+
+        // 必备三步走✨✨
+
+        // 如果没有return出去就成功了提示
+        this.$message.success('添加分类成功！')
+
+        // 刷新数据列表
+        this.getCateList()
+
+        // 同时咋们添加的对话框 要把他隐藏
+        this.addCateDialogVisible = false
+      })
     },
     // 监听对话框的关闭事件，重置表单数据 【就是清空表单】
     addCateDialogClosed() {
