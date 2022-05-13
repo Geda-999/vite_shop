@@ -42,8 +42,8 @@
                 <!-- 操作 -->
                 <!-- size:图标大小 type：图标颜色 -->
                 <!-- scope：接收这一列数据 -->
-                <template slot="opt" slot-scope="">
-                    <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+                <template  slot="opt" slot-scope="scope">
+                    <el-button type="primary" icon="el-icon-edit" size="mini"  @click="showEditDialog(scope.row.cat_id)">编辑</el-button>
                     <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
                 </template>
 
@@ -92,6 +92,19 @@
                 <el-button @click="addCateDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="addCate">确 定</el-button>
             </span>
+        </el-dialog>
+
+        <!-- 修改分类的对话框 -->
+        <el-dialog :visible.sync="editCateDialogVisible" title="修改分类" @close="editCateDialogClosed">
+            <el-form ref="editCateFormRef" :model="editCateForm" label-width="100px">
+                <el-form-item label="分类名称: " prop="cat_name">
+                    <el-input v-model="editCateForm.cat_name"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editCateDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="editCate">确 定</el-button>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -166,7 +179,11 @@ export default {
       },
 
       // 选中的父级分类的Id数组
-      selectedKeys: []
+      selectedKeys: [],
+      // 控制修改分类对话框的显示与隐藏
+      editCateDialogVisible: false,
+      // 修改分类的表单数据对象
+      editCateForm: {}
 
     }
   },
@@ -284,6 +301,56 @@ export default {
       this.selectedKeys = [] // 清空数组
       this.addCateForm.cat_level = 0 // 分类当前层级
       this.addCateForm.cat_pid = 0 // 分类父 ID
+    },
+    // 展现修改对话框的显示与隐藏
+    async showEditDialog(id) {
+      // 发起get请求
+      const { data: res } = await this.$http.get(`categories/${id}`)
+
+      // 判断环节
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取分类失败！')
+      }
+
+      // 如果没有return出去就直接赋值，共页面使用
+      this.editCateForm = res.data
+      // 同时咋们编辑的对话框 要把他隐藏
+      this.editCateDialogVisible = true
+    },
+    // 点击按钮 编辑分类
+    editCate() {
+      this.$refs.editCateFormRef.validate(async valid => {
+        // console.log(valid)
+        //   如果非valid 就预校验失败 就return出去
+        if (!valid) return
+
+        // 如果没有return出去就校验成功
+        // 发起put请求 ，编辑这个功能
+        const { data: res } = await this.$http.put(`categories/${this.editCateForm.cat_id}`,
+          {
+            cat_name: this.editCateForm.cat_name
+          }
+        )
+
+        // 判断环节
+        if (res.meta.status !== 200) {
+          this.$message.error('更新分类失败')
+        }
+
+        // 如果没有return出去就成功了提示
+        this.$message.success('更新分类成功')
+
+        // 刷新数据列表
+        this.getCateList()
+
+        // 同时咋们添加的对话框 要把他隐藏
+        this.editCateDialogVisible = false
+      })
+    },
+
+    // 监听 修改分类对话框的关闭事件
+    editCateDialogClosed() {
+      this.$refs.editCateFormRef.resetFields()
     }
 
   }
