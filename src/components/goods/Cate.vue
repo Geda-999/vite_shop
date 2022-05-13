@@ -44,7 +44,7 @@
                 <!-- scope：接收这一列数据 -->
                 <template  slot="opt" slot-scope="scope">
                     <el-button type="primary" icon="el-icon-edit" size="mini"  @click="showEditDialog(scope.row.cat_id)">编辑</el-button>
-                    <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+                    <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeCateById(scope.row.cat_id)">删除</el-button>
                 </template>
 
             </tree-table>
@@ -298,6 +298,8 @@ export default {
     // 监听对话框的关闭事件，重置表单数据 【就是清空表单】
     addCateDialogClosed() {
       this.$refs.addCateFormRef.resetFields()
+
+      // 注意点: 重置下拉框和表单里面的数据!!!
       this.selectedKeys = [] // 清空数组
       this.addCateForm.cat_level = 0 // 分类当前层级
       this.addCateForm.cat_pid = 0 // 分类父 ID
@@ -351,6 +353,40 @@ export default {
     // 监听 修改分类对话框的关闭事件
     editCateDialogClosed() {
       this.$refs.editCateFormRef.resetFields()
+    },
+
+    // 根据分类id删除分类
+    async removeCateById(id) {
+      // 弹框询问用户是否直接删除数据
+      // MessageBox 弹框
+      const confirmResult = await this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+
+      if (confirmResult === 'confirm') {
+        console.log('确认了删除')
+        // 发起delete请求
+        const { data: res } = await this.$http.delete(`categories/${id}`)
+
+        // 判断环节
+        if (res.meta.status !== 200) {
+          // 如果 不等于200就提示以下内容
+          return this.$message.error('删除分类失败！')
+        }
+
+        // 如果没有return出去就成功了提示
+        this.$message.success('删除分类成功！')
+
+        // 刷新数据列表
+        this.getCateList()
+      }
     }
 
   }
