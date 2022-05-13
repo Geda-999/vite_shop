@@ -53,9 +53,9 @@
             <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page="querInfo.pagenum"
+                :current-page="queryInfo.pagenum"
                 :page-sizes="[3, 5, 10, 15]"
-                :page-size="querInfo.pagesize"
+                :page-size="queryInfo.pagesize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
             </el-pagination>
@@ -72,7 +72,18 @@
                     <el-input v-model="addCateForm.cat_name"></el-input>
                 </el-form-item>
                 <el-form-item label="父级名称：">
-
+                    <!-- Cascader 级联选择器 -->
+                    <!-- options:用来指定数据源 -->
+                    <!-- props:用来指定配置对象 -->
+                    <el-cascader
+                        expand-trigger="hover"
+                        :options="parentCateList"
+                        :props="cascaderProps"
+                        v-model="selectedKeys"
+                        @change="parentCateChanged"
+                        clearable
+                        change-on-select>
+                    </el-cascader>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -88,7 +99,7 @@ export default {
   data() {
     return {
       // 查询条件
-      querInfo: {
+      queryInfo: {
         type: 3, // 值
         pagenum: 1, // 当前页码值
         pagesize: 5 // 每页显示多少条数据
@@ -131,7 +142,7 @@ export default {
         cat_name: '',
         // 父级分类的Id
         cat_pid: 0,
-        // 分类的等级，默认要添加的是1级分类
+        // 分类的等级，默认要添加的是一级分类
         cat_level: 0
       },
       // 添加分类表单的验证规则对象
@@ -141,7 +152,18 @@ export default {
         ]
       },
       // 父级分类的列表
-      parentCateList: []
+      parentCateList: [],
+      //   指定级联选择器的配置对象
+      cascaderProps: {
+        value: 'cat_id', // 你所选中的值的属性
+        label: 'cat_name', // 你所看的值的属性
+        children: 'children', // 父子嵌套的属性
+        // 从el-cascader标签的属性,中移动到这个cascadeProps中
+        expandTrigger: 'hover'
+      },
+
+      // 选中的父级分类的Id数组
+      selectedKeys: []
 
     }
   },
@@ -153,7 +175,7 @@ export default {
     // 获取商品分类数据
     async getCateList() {
       // 发起一个get的请求  请求方法：get 请求路径：categories
-      const { data: res } = await this.$http.get('categories', { params: this.querInfo })
+      const { data: res } = await this.$http.get('categories', { params: this.queryInfo })
 
       //   接着咋们要【判断这的请求是否成功
       if (res.meta.status !== 200) {
@@ -163,14 +185,14 @@ export default {
       console.log(res.data)
       // 把数据列表，赋值给 cateList
       this.cateList = res.data.result
-      // 为总数据条数赋值  赋值一下值
+      // 为总数据queryInfo条数赋值  赋值一下值
       this.total = res.data.total
     },
 
     // 监听 pagesize 改变
     handleSizeChange(newSize) {
       // 赋值
-      this.querInfo.pagesize = newSize
+      this.queryInfo.pagesize = newSize
       // 赋值完毕立即刷新数据列表
       this.getCateList()
     },
@@ -178,7 +200,7 @@ export default {
     // 监听 pagenum 改变
     handleCurrentChange(newPage) {
       // 赋值
-      this.querInfo.pagenum = newPage
+      this.queryInfo.pagenum = newPage
       // 赋值完毕立即刷新数据列表
       this.getCateList()
     },
@@ -203,6 +225,11 @@ export default {
       // 给parentCateList赋值
       //  保存到parentCateList数组中共咋们页面使用
       this.parentCateList = res.data
+    },
+
+    // 选择发生变化触发这个函数
+    parentCateChanged() {
+      console.log(this.selectedKeys)
     }
 
   }
@@ -210,5 +237,7 @@ export default {
 </script>
 
 <style scoped>
-
+.el-cascader{
+    width: 100%;
+}
 </style>
