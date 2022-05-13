@@ -9,6 +9,8 @@ import Users from '../components/user/Users.vue'
 import Rights from '../components/power/Rights.vue'
 import Roles from '../components/power/Roles.vue'
 import Cate from '../components/goods/Cate.vue'
+import Params from '../components/goods/Params.vue'
+
 
 
 
@@ -49,6 +51,10 @@ const router = new VueRouter({
         {
           path: '/categories',
           component: Cate
+        },
+        {
+          path: '/params', // 路径
+          component: Params // 组件
         }
       ]
     }]
