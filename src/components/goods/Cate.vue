@@ -21,7 +21,14 @@
             <!-- 表格区域 -->
             <!-- 导入第三方插件库 -->
             <!-- data: 是数据源   selection-type：是复选框  expand-type：展开栏 show-index：是否显示数据索引[序号]  index-text：数据索引名称[#]  border：是否显示纵向边框  show-row-hover：鼠标悬停时，是否高亮当前行 -->
-            <tree-table :data="cateList" :columns="columns" :selection-type="false" :expand-type="false" :show-index="true" index-text="#" border :show-row-hover="false"></tree-table>
+            <tree-table :data="cateList" :columns="columns" :selection-type="false" :expand-type="false" :show-index="true" index-text="#" border :show-row-hover="false">
+                <!-- 定义插槽 -->
+                <!-- scope：接收这一行数据 -->
+                <template slot="isok" slot-scope="scope">
+                    <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color:lightgreen"></i>
+                    <i class="el-icon-error" v-else  style="color:red"></i>
+                </template>
+            </tree-table>
 
             <!-- 分页区域 -->
         </el-card>
@@ -45,7 +52,16 @@ export default {
       // 为table指定列的定义
       //   label：列标题名称   prop：对应列内容的属性名
       columns: [
-        { label: '分类名称', prop: 'cat_name' }
+        {
+          label: '分类名称', // 标题
+          prop: 'cat_name' // 商品名称
+        },
+        {
+          label: '是否有效', // 标题
+          type: 'template', // 表示，将当前列定义为模板列
+          // template属性指定具体的作用域插槽  插槽名称：isok
+          template: 'isok' // 表示当前这一列使用模板名称
+        }
       ]
     }
   },
