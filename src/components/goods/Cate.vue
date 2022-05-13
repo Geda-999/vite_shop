@@ -23,11 +23,30 @@
             <!-- data: 是数据源   selection-type：是复选框  expand-type：展开栏 show-index：是否显示数据索引[序号]  index-text：数据索引名称[#]  border：是否显示纵向边框  show-row-hover：鼠标悬停时，是否高亮当前行 -->
             <tree-table :data="cateList" :columns="columns" :selection-type="false" :expand-type="false" :show-index="true" index-text="#" border :show-row-hover="false">
                 <!-- 定义插槽 -->
-                <!-- scope：接收这一行数据 -->
+                <!-- scope：接收这一列数据 -->
+                <!-- 是否有效 -->
                 <template slot="isok" slot-scope="scope">
                     <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color:lightgreen"></i>
                     <i class="el-icon-error" v-else  style="color:red"></i>
                 </template>
+
+                <!-- 排序 -->
+                <!-- size:图标大小 type：图标颜色 -->
+                <!-- scope：接收这一列数据 -->
+                <template slot="order" slot-scope="scope">
+                    <el-tag size="mini" v-if="scope.row.cat_level === 0">一级</el-tag>
+                    <el-tag size="mini" type="success" v-else-if="scope.row.cat_level === 1">二级</el-tag>
+                    <el-tag size="mini" type="warning" v-else>三级</el-tag>
+                </template>
+
+                <!-- 操作 -->
+                <!-- size:图标大小 type：图标颜色 -->
+                <!-- scope：接收这一列数据 -->
+                <template slot="opt" slot-scope="scope">
+                    <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+                    <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+                </template>
+
             </tree-table>
 
             <!-- 分页区域 -->
@@ -61,6 +80,18 @@ export default {
           type: 'template', // 表示，将当前列定义为模板列
           // template属性指定具体的作用域插槽  插槽名称：isok
           template: 'isok' // 表示当前这一列使用模板名称
+        },
+        {
+          label: '排序', // 标题
+          type: 'template', // 表示，将当前列定义为模板列
+          // template属性指定具体的作用域插槽  插槽名称：isok
+          template: 'order' // 表示当前这一列使用模板名称
+        },
+        {
+          label: '操作', // 标题
+          type: 'template', // 表示，将当前列定义为模板列
+          // template属性指定具体的作用域插槽  插槽名称：isok
+          template: 'opt' // 表示当前这一列使用模板名称
         }
       ]
     }
