@@ -62,10 +62,12 @@
         </el-card>
 
         <!-- 添加分类的对话框 -->
+        <!-- close:清空重置表单数据 -->
         <el-dialog
             title="添加分类"
             :visible.sync="addCateDialogVisible"
-            width="50%">
+            width="50%"
+            @close="addCateDialogClosed">
             <el-form :model="addCateForm" :rules="addCateFormRules" ref="addCateFormRef" label-width="100px">
                                 <!-- prop:验证规则 -->
                 <el-form-item label="分类名称：" prop="cat_name">
@@ -248,6 +250,13 @@ export default {
     // 点击按钮，添加新的分类
     addCate() {
       console.log(this.addCateForm)
+    },
+    // 监听对话框的关闭事件，重置表单数据 【就是清空表单】
+    addCateDialogClosed() {
+      this.$refs.addCateFormRef.resetFields()
+      this.selectedKeys = [] // 清空数组
+      this.addCateForm.cat_level = 0 // 分类当前层级
+      this.addCateForm.cat_pid = 0 // 分类父 ID
     }
 
   }
