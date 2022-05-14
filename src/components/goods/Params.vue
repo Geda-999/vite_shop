@@ -36,6 +36,12 @@
                 v-model="selectedCateKeys"
                 @change="handleChange">
             </el-cascader>
+
+            <!-- tab 页签区域 -->
+            <el-tabs v-model="activeName" @tab-click="handleTabClick">
+                <el-tab-pane label="动态参数" name="first">动态参数</el-tab-pane>
+                <el-tab-pane label="静态属性" name="second">静态属性</el-tab-pane>
+            </el-tabs>
         </el-col>
       </el-row>
     </el-card>
@@ -55,7 +61,9 @@ export default {
         children: 'children' // 父子节点的嵌套属性 【咋们通过children来做那个名称】
       },
       // 级联选择框双向判定到的数组
-      selectedCateKeys: []
+      selectedCateKeys: [],
+      // 声明v-model
+      activeName: 'first' // 被激活的页签的名称
     }
   },
   created() {
@@ -81,7 +89,18 @@ export default {
     },
     // 级联选择框 选中项 变化，会触发这个函数
     handleChange() {
+    // 证明选中的不是三级分类
+      if (this.selectedCateKeys.length !== 3) {
+        this.selectedCateKeys = []
+        return
+      }
+
+      // 证明选中的是三级分类
       console.log(this.selectedCateKeys)
+    },
+    // tab 页签点击事件的处理函数
+    handleTabClick() {
+      console.log(this.activeName)
     }
   }
 }
