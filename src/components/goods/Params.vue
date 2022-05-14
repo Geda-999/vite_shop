@@ -43,12 +43,52 @@
                 <el-tab-pane label="动态参数" name="many">
                     <!-- 添加参数的按钮 -->
                     <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加参数</el-button>
+
+                    <!-- 动态参数表格 :data="manyTableData"这是动态参数数据源 -->
+                    <el-table :data="manyTableData" border stripe>
+                        <!-- 展开行 -->
+                        <el-table-column type="expand"></el-table-column>
+                        <!-- 索引列 -->
+                        <el-table-column type="index"></el-table-column>
+                        <!-- 标题：参数名称 -->
+                        <el-table-column label="参数名称" prop="attr_name"></el-table-column>
+                        <!-- 标题：操作 -->
+                        <el-table-column label="操作">
+                            <!-- 作用域插槽 -->
+                            <template slot-scope="">
+                                <!-- 编辑按钮 -->
+                                <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+                                <!-- 删除按钮 -->
+                                <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-tab-pane>
 
                 <!-- 添加静态属性的面板   only:是静态了 -->
                 <el-tab-pane label="静态属性" name="only">
                     <!-- 添加属性的按钮 -->
                     <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
+
+                    <!-- 静态属性表格 :data="onlyTableData"这是静态属性数据源 -->
+                    <el-table :data="onlyTableData" border stripe>
+                        <!-- 展开行 -->
+                        <el-table-column type="expand"></el-table-column>
+                        <!-- 索引列 -->
+                        <el-table-column type="index"></el-table-column>
+                        <!-- 标题：属性名称 -->
+                        <el-table-column label="属性名称" prop="attr_name"></el-table-column>
+                        <!-- 标题：操作 -->
+                        <el-table-column label="操作">
+                            <!-- 作用域插槽 -->
+                            <template slot-scope="">
+                                <!-- 编辑按钮 -->
+                                <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+                                <!-- 删除按钮 -->
+                                <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-tab-pane>
             </el-tabs>
         </el-col>
