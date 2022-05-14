@@ -72,7 +72,11 @@ export default {
       // 级联选择框双向判定到的数组
       selectedCateKeys: [],
       // 声明v-model
-      activeName: 'many' // 被激活的页签的名称
+      activeName: 'many', // 被激活的页签的名称
+      // 动态参数的数据
+      manyTableData: [],
+      // 静态属性的数据
+      onlyTableData: []
     }
   },
   created() {
@@ -142,6 +146,19 @@ export default {
 
       // 如果没有return出去就咋们获取数据成功啦
       console.log(res.data)
+
+      // 判断来啦
+      // 如果 this.activeName 当前我们激活的那个tab页签 他的名字 如果等于many的话
+      // 证明咋们获取动态参数里面的数据
+      if (this.activeName === 'many') {
+        // 哪接下来咋们可以把res.data挂载到一个专门的数据对象身上
+        // this.动态表格数据
+        this.manyTableData = res.data
+      } else {
+        // else 的话就证明 你获取到这个数据 不属于 动态的这个表格里
+        // 哪应该把他挂载到 静态的表格中
+        this.onlyTableData = res.data
+      }
     }
   },
 
