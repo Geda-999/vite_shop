@@ -23,9 +23,19 @@
       <el-row class="my-4">
         <!-- 一列 -->
         <el-col>
-          <span>选择商品分类：</span>
-
-          <!-- 选择商品分类的级联选择框 -->
+           <span>选择商品分类：</span>
+           <!-- 下面用到是ui框架中的 Cascader 级联选择器 -->
+           <!-- 选择商品分类的级联选择框 -->
+           <!-- expand-trigger:触发子菜单 options：是用来指定数据源了 props:用来配置节点选择框了  -->
+           <!-- v-model：可以把咋们选中的那些id值，双向判定到对应的数组中 -->
+           <!-- change：事件是判定了选择项改变的事件 -->
+            <el-cascader
+                expand-trigger="hover"
+                :options="cateList"
+                :props="cateProps"
+                v-model="selectedCateKeys"
+                @change="handleChange">
+            </el-cascader>
         </el-col>
       </el-row>
     </el-card>
@@ -36,8 +46,16 @@
 export default {
   data() {
     return {
-      // 获取所有 商品分类列表
-      cateList: []
+      // 获取所有 商品分类列表 【这个就是数据源啦】
+      cateList: [],
+      // 级联选择框的配置对象
+      cateProps: {
+        value: 'cat_id', // 指定咋们选中的那个值   【咋们通过cat_id来做那个值】
+        label: 'cat_name', // 指定你所看到那个名称 【咋们通过cat_name来做那个名称】
+        children: 'children' // 父子节点的嵌套属性 【咋们通过children来做那个名称】
+      },
+      // 级联选择框双向判定到的数组
+      selectedCateKeys: []
     }
   },
   created() {
@@ -60,6 +78,10 @@ export default {
       this.cateList = res.data
 
       console.log(this.cateList)
+    },
+    // 级联选择框 选中项 变化，会触发这个函数
+    handleChange() {
+      console.log(this.selectedCateKeys)
     }
   }
 }
