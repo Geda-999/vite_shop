@@ -96,8 +96,21 @@ export default {
 
       console.log(this.cateList)
     },
+
     // 级联选择框 选中项 变化，会触发这个函数
-    async handleChange() {
+    handleChange() {
+      // 调用这个函数
+      this.getParamsData()
+    },
+    // tab 页签点击事件的处理函数
+    handleTabClick() {
+      console.log(this.activeName)
+      // 调用这个函数
+      this.getParamsData()
+    },
+
+    // 获取参数的列表数据
+    async getParamsData() {
     // 证明选中的不是三级分类
       if (this.selectedCateKeys.length !== 3) {
         this.selectedCateKeys = [] // 清空数组
@@ -129,10 +142,6 @@ export default {
 
       // 如果没有return出去就咋们获取数据成功啦
       console.log(res.data)
-    },
-    // tab 页签点击事件的处理函数
-    handleTabClick() {
-      console.log(this.activeName)
     }
   },
 
