@@ -42,7 +42,7 @@
                 <!-- 添加动态参数的面板   many:是动态了 -->
                 <el-tab-pane label="动态参数" name="many">
                     <!-- 添加参数的按钮 -->
-                    <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加参数</el-button>
+                    <el-button type="primary" size="mini" :disabled="isBtnDisabled" @click="addDialogVisible=true">添加参数</el-button>
 
                     <!-- 动态参数表格 :data="manyTableData"这是动态参数数据源 -->
                     <el-table :data="manyTableData" border stripe>
@@ -68,7 +68,7 @@
                 <!-- 添加静态属性的面板   only:是静态了 -->
                 <el-tab-pane label="静态属性" name="only">
                     <!-- 添加属性的按钮 -->
-                    <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
+                    <el-button type="primary" size="mini" :disabled="isBtnDisabled" @click="addDialogVisible=true">添加属性</el-button>
 
                     <!-- 静态属性表格 :data="onlyTableData"这是静态属性数据源 -->
                     <el-table :data="onlyTableData" border stripe>
@@ -94,6 +94,25 @@
         </el-col>
       </el-row>
     </el-card>
+
+    <!-- 添加参数的对话框 -->
+    <!--  @close="addDialogClosed"这是监听事件 -->
+    <el-dialog
+        :title="'添加' + titleText"
+        :visible.sync="addDialogVisible"
+        width="50%"
+        @close="addDialogClosed">
+        <!-- 添加参数的对话框  Form 表单 -->
+        <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
+            <el-form-item :label="titleText" prop="attr_name">
+                <el-input v-model="addForm.attr_name"></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="addDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -116,7 +135,24 @@ export default {
       // 动态参数的数据
       manyTableData: [],
       // 静态属性的数据
-      onlyTableData: []
+      onlyTableData: [],
+      // 控制添加对话框的显示与隐藏
+      addDialogVisible: false,
+      // 添加参数的表单数据对象
+      addForm: {
+        attr_name: '' // 要添加那个参数名称
+      },
+      // 添加表单的验证规则对象
+      addFormRules: {
+        // 为这个名称添加校验
+        attr_name: [
+          {
+            required: true,
+            message: '请输入参数名称',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   created() {
@@ -199,6 +235,13 @@ export default {
         // 哪应该把他挂载到 静态的表格中
         this.onlyTableData = res.data
       }
+    },
+
+    // 这是监听处理函数
+    // 监听添加对话框的关闭事件
+    addDialogClosed() {
+      // 只要触发的关闭，咋们就将它重置一下
+      this.$refs.addFormRef.resetFields()
     }
   },
 
@@ -226,6 +269,13 @@ export default {
       // 哪证明你没有选中三级分类 就返回 空
       // 证明没有这个Id值
       return null
+    },
+    // 动态计算标题的文本
+    titleText() {
+      if (this.activeName === 'many') {
+        return '动态参数'
+      }
+      return '静态属性'
     }
   }
 }
