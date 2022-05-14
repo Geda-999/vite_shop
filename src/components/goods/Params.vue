@@ -39,14 +39,14 @@
 
             <!-- tab 页签区域 -->
             <el-tabs v-model="activeName" @tab-click="handleTabClick">
-                <!-- 添加动态参数的面板 -->
-                <el-tab-pane label="动态参数" name="first">
+                <!-- 添加动态参数的面板   many:是动态了 -->
+                <el-tab-pane label="动态参数" name="many">
                     <!-- 添加参数的按钮 -->
                     <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加参数</el-button>
                 </el-tab-pane>
 
-                <!-- 添加静态属性的面板 -->
-                <el-tab-pane label="静态属性" name="second">
+                <!-- 添加静态属性的面板   only:是静态了 -->
+                <el-tab-pane label="静态属性" name="only">
                     <!-- 添加属性的按钮 -->
                     <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
                 </el-tab-pane>
@@ -72,7 +72,7 @@ export default {
       // 级联选择框双向判定到的数组
       selectedCateKeys: [],
       // 声明v-model
-      activeName: 'first' // 被激活的页签的名称
+      activeName: 'many' // 被激活的页签的名称
     }
   },
   created() {
@@ -97,7 +97,7 @@ export default {
       console.log(this.cateList)
     },
     // 级联选择框 选中项 变化，会触发这个函数
-    handleChange() {
+    async handleChange() {
     // 证明选中的不是三级分类
       if (this.selectedCateKeys.length !== 3) {
         this.selectedCateKeys = [] // 清空数组
@@ -106,6 +106,29 @@ export default {
 
       // 证明选中的是三级分类
       console.log(this.selectedCateKeys)
+
+      // 发起请求啦！！！
+      // 根据所选分类的Id，和当前所处的面板，获取对应的参数
+      // 请求路径：categories/:id/attributes
+      // 其中/:id/是个参数 代表当前选中的三级分类的id
+      // 那么这个id呀 已经被咋们设计成了一个计算属性【cateId】直接拼接就行
+      // 同时咋们需要 向服务发送一个get参数 名字叫做 sel 那么他的值可以直接咋们 判定到了v-model="activeName"身上进行获取
+      const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`,
+        { // 那咋们就这里写一个参数  params：指定get参数也是个对象 sel: 的值activeName
+          params: { sel: this.activeName }
+        }
+      )
+
+      // 查看是否请求成功 并且返回200回来
+      //   console.log(res)
+
+      // 结构重命名后就进行判断是否成功啦！！！
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取参数列表失败！')
+      }
+
+      // 如果没有return出去就咋们获取数据成功啦
+      console.log(res.data)
     },
     // tab 页签点击事件的处理函数
     handleTabClick() {
@@ -117,12 +140,26 @@ export default {
   computed: {
     // 如果按钮需要被禁用，则返回true。否则返回false
     isBtnDisabled() {
-      // 判断 选中项的length  不等于3的话那证明你没有 选中三级分类 应该是禁用掉 就返回true就行了
+      // 判断 选中项的length  不等于3的话那证明你没有 选中三级分类
+      // 应该是禁用掉 就返回true就行了
       if (this.selectedCateKeys.length !== 3) {
         return true
       }
 
       return false
+    },
+    // 当前选中的三级分类的Id
+    cateId() {
+      // 判断 选中项的length  等于3的话那证明你选中三级分类
+      // 那么咋们就直接return this.keys最后一项就是索引为2
+      if (this.selectedCateKeys.length === 3) {
+        return this.selectedCateKeys[2]
+      }
+
+      // 如果没有return出去
+      // 哪证明你没有选中三级分类 就返回 空
+      // 证明没有这个Id值
+      return null
     }
   }
 }
