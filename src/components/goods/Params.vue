@@ -39,8 +39,17 @@
 
             <!-- tab 页签区域 -->
             <el-tabs v-model="activeName" @tab-click="handleTabClick">
-                <el-tab-pane label="动态参数" name="first">动态参数</el-tab-pane>
-                <el-tab-pane label="静态属性" name="second">静态属性</el-tab-pane>
+                <!-- 添加动态参数的面板 -->
+                <el-tab-pane label="动态参数" name="first">
+                    <!-- 添加参数的按钮 -->
+                    <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加参数</el-button>
+                </el-tab-pane>
+
+                <!-- 添加静态属性的面板 -->
+                <el-tab-pane label="静态属性" name="second">
+                    <!-- 添加属性的按钮 -->
+                    <el-button type="primary" size="mini" :disabled="isBtnDisabled">添加属性</el-button>
+                </el-tab-pane>
             </el-tabs>
         </el-col>
       </el-row>
@@ -91,7 +100,7 @@ export default {
     handleChange() {
     // 证明选中的不是三级分类
       if (this.selectedCateKeys.length !== 3) {
-        this.selectedCateKeys = []
+        this.selectedCateKeys = [] // 清空数组
         return
       }
 
@@ -101,6 +110,19 @@ export default {
     // tab 页签点击事件的处理函数
     handleTabClick() {
       console.log(this.activeName)
+    }
+  },
+
+  // 计算属性 【布尔值】
+  computed: {
+    // 如果按钮需要被禁用，则返回true。否则返回false
+    isBtnDisabled() {
+      // 判断 选中项的length  不等于3的话那证明你没有 选中三级分类 应该是禁用掉 就返回true就行了
+      if (this.selectedCateKeys.length !== 3) {
+        return true
+      }
+
+      return false
     }
   }
 }
