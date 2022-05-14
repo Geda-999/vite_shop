@@ -110,13 +110,14 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="addDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+            <el-button type="primary" @click="addParams">确 定</el-button>
         </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -242,6 +243,39 @@ export default {
     addDialogClosed() {
       // 只要触发的关闭，咋们就将它重置一下
       this.$refs.addFormRef.resetFields()
+    },
+    // 点击按钮，添加参数
+    addParams() {
+      // 验证环节
+      this.$refs.addFormRef.validate(async valid => {
+        // console.log(valid)
+        // 如果非valid 就预校验失败 就return出去
+        if (!valid) return
+
+        // 如果没有return出去就校验成功
+        // 发起post请求 ，编辑这个功能
+        // /:id/ 被咋们设计成计算属性了cateId    attr_name参数名称  attr_sel[only,many]
+        const { data: res } = await this.$http.post(`categories/${this.cateId}/attributes`,
+          {
+            attr_name: this.addForm.attr_name,
+            attr_sel: this.activeName
+          }
+        )
+
+        // 判断环节
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加参数失败！')
+        }
+
+        // 如果没有return出去就成功了提示
+        this.$message.success('添加参数成功！')
+
+        // 同时咋们添加的对话框 要把他隐藏
+        this.addDialogVisible = false
+
+        // 刷新数据列表
+        this.getParamsData()
+      })
     }
   },
 
