@@ -10,55 +10,57 @@ import Rights from '../components/power/Rights.vue'
 import Roles from '../components/power/Roles.vue'
 import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
+import GoodsList from "../components/goods/List.vue";
 
-
-
-
-
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes: [
     {
-      path: '/',
-      redirect: '/login'
+      path: "/",
+      redirect: "/login",
     },
     {
-      path: '/login',
-      component: Login
+      path: "/login",
+      component: Login,
     },
     {
-      path: '/home',
+      path: "/home",
       component: Home,
-      redirect: '/wlecome',
+      redirect: "/wlecome",
       children: [
         {
-          path: '/wlecome',
-          component: Wlecome
+          path: "/wlecome",
+          component: Wlecome,
         },
         {
-          path: '/users',
-          component: Users
+          path: "/users",
+          component: Users,
         },
         {
-          path: '/rights',
-          component: Rights
+          path: "/rights",
+          component: Rights,
         },
         {
-          path: '/roles',
-          component: Roles
+          path: "/roles",
+          component: Roles,
         },
         {
-          path: '/categories',
-          component: Cate
+          path: "/categories",
+          component: Cate,
         },
         {
-          path: '/params', // 路径
-          component: Params // 组件
-        }
-      ]
-    }]
-})
+          path: "/params", // 路径
+          component: Params, // 组件
+        },
+        {
+          path: "/goods", // 路径
+          component: GoodsList, // 组件
+        },
+      ],
+    },
+  ],
+});
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
