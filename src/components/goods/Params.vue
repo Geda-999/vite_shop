@@ -61,7 +61,7 @@
                                 <!-- 那要去哪接收呢，就去methods函数中的【showEditDialog(attr_id)】接收就行啦 -->
                                 <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
                                 <!-- 删除按钮 -->
-                                <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+                                <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeParams(scope.row.attr_id)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -85,9 +85,11 @@
                             <!-- 作用域插槽 -->
                             <template slot-scope="scope">
                                 <!-- 编辑按钮 -->
+                                <!-- (scope.row.attr_id)给传到函数中 -->
+                                <!-- 那要去哪接收呢，就去methods函数中的【showEditDialog(attr_id)】接收就行啦 -->
                                 <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
                                 <!-- 删除按钮 -->
-                                <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+                                <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeParams(scope.row.attr_id)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -391,6 +393,48 @@ export default {
         // 同时咋们添加的对话框 要把他隐藏
         this.editDialogVisible = false
       })
+    },
+
+    // 根据Id删除对应的参数项
+    // eslint-disable-next-line camelcase
+    async removeParams(attr_id) {
+      // 首先弹出提一下是否要删除
+      // 这下就不用【结构重命名】了因为他返回是一个文本
+      // 咋们就可以【confirmResult】来接收
+      const confirmResult = await this.$confirm('此操作将永久删除该参数, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)// 那如果他取消了，那咋们通过点【.catch】捕或错误 并且将错误给他return出去
+
+      // confirmResult有两种情况
+      // 判断环节来啦！！！
+      // 用户取消了删除的操作
+      if (confirmResult !== 'confirm') {
+        // 直接return出去并且提示一个用户
+        return this.$message.info('已取消删除！')
+      }
+
+      // 哪如果没有取消的话 就不会return出去
+      // 不会走删除的业务逻辑
+
+      // 第一个 /:id/   这个是【分类id】就是咋们计算属性
+      // 第二个 attr_id 这个是当前【参数的id】 在【removeParams(attr_id)】这里来获取
+
+      // 删除的业务逻辑 那就调用api嘛
+      // eslint-disable-next-line camelcase
+      const { data: res } = await this.$http.delete(`categories/${this.cateId}/attributes/${attr_id}`)
+
+      if (res.meta.status !== 200) {
+        // 如果 不等于200就提示以下内容
+        return this.$message.error('删除参数失败！')
+      }
+
+      // 如果没有return出去就提示成功了
+      this.$message.success('删除参数成功！')
+
+      // 并且刷新数据列表
+      this.getParamsData()
     }
   },
 
