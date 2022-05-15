@@ -55,9 +55,11 @@
                         <!-- 标题：操作 -->
                         <el-table-column label="操作">
                             <!-- 作用域插槽 -->
-                            <template slot-scope="">
+                            <template slot-scope="scope">
                                 <!-- 编辑按钮 -->
-                                <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditDialog">编辑</el-button>
+                                <!-- (scope.row.attr_id)给传到函数中 -->
+                                <!-- 那要去哪接收呢，就去methods函数中的【showEditDialog(attr_id)】接收就行啦 -->
+                                <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
                                 <!-- 删除按钮 -->
                                 <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
                             </template>
@@ -81,9 +83,9 @@
                         <!-- 标题：操作 -->
                         <el-table-column label="操作">
                             <!-- 作用域插槽 -->
-                            <template slot-scope="">
+                            <template slot-scope="scope">
                                 <!-- 编辑按钮 -->
-                                <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditDialog">编辑</el-button>
+                                <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
                                 <!-- 删除按钮 -->
                                 <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
                             </template>
@@ -316,7 +318,31 @@ export default {
     },
 
     // 点击按钮，展示修改的对话框
-    showEditDialog() {
+    // eslint-disable-next-line camelcase
+    async showEditDialog(attr_id) {
+      // 发起请求拿数据啦
+      // 第一个 /:id/   这个是【分页id】就是咋们计算属性
+      // 第二个 :attrId 这个是当前【参数的id】
+
+      // 这是查询当前参数的信息
+      // eslint-disable-next-line camelcase
+      const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes/${attr_id}`,
+        // 同时咋们还有提供一个新的参数
+        {
+          params: { attr_sel: this.activeName }
+        }
+      )
+
+      // 判断环节来啦！！！
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取参数信息失败！')
+      }
+
+      // 那如果没有失败的话，咋们可以将获取到的信息保存到这个编辑的表单对象身上。 哪这个编辑的表单对象就是 :model="editForm" 就可以直接赋值啦
+      // 如果没有return出去就直接赋值，共页面使用
+      this.editForm = res.data
+
+      // 同时咋们修改的对话框 要把他显示出来
       this.editDialogVisible = true
     },
 
@@ -326,7 +352,46 @@ export default {
     },
 
     // 点击按钮，修改参数信息
-    editParams() {}
+    editParams() {
+      // 预验证   调用validate方法
+      // 先拿到表单的引用【this.$refs.】表单的名称【ref="editFormRef"】点【validate】函数做一个验证，验证的结果通过【valid】来获取
+      this.$refs.editFormRef.validate(async valid => {
+        // 做一下判断 如果非valid 那么就验证失败 直接return
+        if (!valid) return
+
+        // 如果没有return出来就证明验证成功啦！！！
+
+        // 发起请求拿数据啦
+        // 咋们可以【this.$http.】发起一下put请求 请求路径
+        // 第一个 /:id/   这个是【分页id】就是咋们计算属性
+        // 第二个 :attrId 这个是当前【参数的id】
+        const { data: res } = await this.$http.put(`categories/${this.cateId}/attributes/${this.editForm.attr_id}`,
+          { // 同时要提交一下表单的数据对象
+            attr_name: this.editForm.attr_name, // attr_name新属性的名字
+            attr_sel: this.activeName // attr_sel属性的类型[many或only]
+          }
+          // 那么当这次发起请送成功之后 哪服务器会返回一个结果 那咋们来通过 await修饰 在【valid】之前加一个 async 来接收
+          // 然后就结构赋值 判断了
+        )
+
+        // 判断环节
+        if (res.meta.status !== 200) {
+          // 失败就提示用户
+          this.$message.error('修改参数失败！')
+        }
+
+        // 必备三步走起✨✨
+
+        // 如果没有return出去就成功了提示
+        this.$message.success('修改参数成功')
+
+        // 刷新数据列表
+        this.getParamsData()
+
+        // 同时咋们添加的对话框 要把他隐藏
+        this.editDialogVisible = false
+      })
+    }
   },
 
   // 计算属性 【布尔值】

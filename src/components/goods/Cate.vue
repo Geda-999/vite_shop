@@ -316,7 +316,7 @@ export default {
 
       // 如果没有return出去就直接赋值，共页面使用
       this.editCateForm = res.data
-      // 同时咋们编辑的对话框 要把他隐藏
+      // 同时咋们编辑的对话框 要把他显示出来
       this.editCateDialogVisible = true
     },
     // 点击按钮 编辑分类
