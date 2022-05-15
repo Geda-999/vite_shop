@@ -280,7 +280,10 @@ export default {
       // 咋们每拿到一个item项 就将他们了【item.attr_vals 】用【split】做分割 里面写一个空格
       // 哪接下来他的返回值 是一个数组 我们需要重新给当前【item.attr_vals 】给他赋值一下
       // 已经过这个环节他就变成数组了
-        item.attr_vals = item.attr_vals.split(' ')
+      // 我们先【item.attr_vals】这个字符串做一个判断
+      // 哪如果他不为空就直接【item.attr_vals.split(' ')】分割
+      // 如果他为空字符串，哪肯定返回的是 直接返回空白了数组就行了
+        item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
       })
 
       console.log(res.data) // 这个打印的是数组
