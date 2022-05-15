@@ -53,7 +53,24 @@
                             <!-- 数组循环 渲染直接{{item}} -->
                             <!-- 数组：scope.row 是这一行数据这一行数据身上有个属性叫attr_vals -->
                             <template slot-scope="scope">
+                                <!-- 循环渲染Tag标签 -->
                                 <el-tag class="m-3" v-for="(item, i) in scope.row.attr_vals" :key="i" closable>{{ item }}</el-tag>
+
+                                <!-- 输入的文本框 -->
+                                <!-- v-if是控制文本框切换与显示 v-model是双向判定了数据 -->
+                                <el-input
+                                    class="input-new-tag w-32"
+                                    v-if="inputVisible"
+                                    v-model="inputValue"
+                                    ref="saveTagInput"
+                                    size="small"
+                                    @keyup.enter.native="handleInputConfirm"
+                                    @blur="handleInputConfirm"
+                                    >
+                                </el-input>
+
+                                <!-- 添加的按钮 -->
+                                <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
                             </template>
                         </el-table-column>
                         <!-- 索引列 -->
@@ -202,7 +219,13 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+
+      // 控制按钮与文本框的切换显示
+      inputVisible: false,
+
+      // 文本框中输入的内容 默认为空
+      inputValue: ''
     }
   },
   created() {
@@ -459,6 +482,16 @@ export default {
 
       // 并且刷新数据列表
       this.getParamsData()
+    },
+
+    // 文本框失去焦点，或摁下了，Enter都会触发
+    handleInputConfirm() {
+      console.log('ok')
+    },
+
+    // 点击按钮，展示文本输入框
+    showInput() {
+      this.inputVisible = true
     }
   },
 
