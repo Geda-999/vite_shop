@@ -100,7 +100,32 @@
                     <!-- 静态属性表格 :data="onlyTableData"这是静态属性数据源 -->
                     <el-table :data="onlyTableData" border stripe>
                         <!-- 展开行 -->
-                        <el-table-column type="expand"></el-table-column>
+                        <el-table-column type="expand">
+                            <!-- 作用域插槽 -->
+                            <!-- 用 scope：接收这一行数据 -->
+                            <!-- 数组循环 渲染直接{{item}} -->
+                            <!-- 数组：scope.row 是这一行数据这一行数据身上有个属性叫attr_vals -->
+                            <template slot-scope="scope">
+                                <!-- 循环渲染Tag标签 -->
+                                <el-tag class="m-3" v-for="(item, i) in scope.row.attr_vals" :key="i" closable @close="handleClose(i, scope.row)">{{ item }}</el-tag>
+
+                                <!-- 输入的文本框 -->
+                                <!-- v-if是控制文本框切换与显示 v-model是双向判定了数据 -->
+                                <el-input
+                                    class="input-new-tag w-32"
+                                    v-if="scope.row.inputVisible"
+                                    v-model="scope.row.inputValue"
+                                    ref="saveTagInput"
+                                    size="small"
+                                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                                    @blur="handleInputConfirm(scope.row)"
+                                    >
+                                </el-input>
+
+                                <!-- 添加的按钮 -->
+                                <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
+                            </template>
+                        </el-table-column>
                         <!-- 索引列 -->
                         <el-table-column type="index"></el-table-column>
                         <!-- 标题：属性名称 -->
