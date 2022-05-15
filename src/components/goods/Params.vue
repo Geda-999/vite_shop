@@ -489,15 +489,52 @@ export default {
     },
 
     // 文本框失去焦点，或摁下了，Enter都会触发
-    handleInputConfirm(row) {
+    async handleInputConfirm(row) {
       // console.log('ok')
 
+      // 判断环节来啦！！！
+      // trim()去除字符串两端的空格 判断他的length是否等于零
       if (row.inputValue.trim().length === 0) {
+
+      // 如果长度等于零的证明你 输入内容是不合法了 是空了
+      // 哪咋们的值重置为空字符串        
         row.inputValue = ''
+
+        // 同时咋们文本框把他隐藏
         row.inputVisible = false
+
+        // 长度为就直接return出去了
+        return
       }
 
-      // 如果没有return，则证明输入的内容，需要做后续的处理
+        // 如果没有return，则证明输入的内容，需要做后续的处理
+        // attr_vals数组中push一个对应的值就行了，那么为了防止前后的空格，可以加一个trim
+        row.attr_vals.push(row.inputValue.trim())
+
+        // 重置为空字符串
+        row.inputValue = ''
+
+        // 同时咋们文本框把他隐藏
+        row.inputVisible = false
+
+        // 发起请求，把数据保存到数据库中
+        // 需要发起请求，保存这次操作
+        const { data:res } = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,
+          { // 携带请求体
+            attr_name: row.attr_name, // attr_name新属性的名字
+            attr_sel: row.attr_sel, // attr_sel属性的类型[many或only]
+            attr_vals: row.attr_vals.join(' ') // 刚刚拼接出来的新数组 因为服务器只接收字符串
+          }
+        )
+
+        // 判断环节
+        if( res.meta.status !== 200 ) {
+          // 失败就提示用户
+          return this.$message.error('修改参数项失败！')
+        }
+
+        // 如果没有return出去就成功了提示
+        this.$message.success('修改参数项成功！')
     },
 
     // 点击按钮，展示文本输入框
