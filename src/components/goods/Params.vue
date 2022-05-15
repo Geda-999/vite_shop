@@ -47,7 +47,15 @@
                     <!-- 动态参数表格 :data="manyTableData"这是动态参数数据源 -->
                     <el-table :data="manyTableData" border stripe>
                         <!-- 展开行 -->
-                        <el-table-column type="expand"></el-table-column>
+                        <el-table-column type="expand">
+                            <!-- 作用域插槽 -->
+                            <!-- 用 scope：接收这一行数据 -->
+                            <!-- 数组循环 渲染直接{{item}} -->
+                            <!-- 数组：scope.row 是这一行数据这一行数据身上有个属性叫attr_vals -->
+                            <template slot-scope="scope">
+                                <el-tag class="m-3" v-for="(item, i) in scope.row.attr_vals" :key="i" closable>{{ item }}</el-tag>
+                            </template>
+                        </el-table-column>
                         <!-- 索引列 -->
                         <el-table-column type="index"></el-table-column>
                         <!-- 标题：参数名称 -->
@@ -263,9 +271,21 @@ export default {
       }
 
       // 如果没有return出去就咋们获取数据成功啦
-      console.log(res.data)
+      //   console.log(res.data) // 这个打印的是字符串 注意：先把下面的【console.log(res.data) // 这个打印的是数组】注释了
 
-      // 判断来啦
+      // 字符串变数组环节来啦✨🚀✨
+      // 在赋值之前将他们的每一项都做一次循环
+      res.data.forEach(item => {
+      // 每循环一次都会拿到一个item项
+      // 咋们每拿到一个item项 就将他们了【item.attr_vals 】用【split】做分割 里面写一个空格
+      // 哪接下来他的返回值 是一个数组 我们需要重新给当前【item.attr_vals 】给他赋值一下
+      // 已经过这个环节他就变成数组了
+        item.attr_vals = item.attr_vals.split(' ')
+      })
+
+      console.log(res.data) // 这个打印的是数组
+
+      // 判断来啦 和 赋值 ，共页面使用
       // 如果 this.activeName 当前我们激活的那个tab页签 他的名字 如果等于many的话
       // 证明咋们获取动态参数里面的数据
       if (this.activeName === 'many') {
@@ -285,6 +305,7 @@ export default {
       // 只要触发的关闭，咋们就将它重置一下
       this.$refs.addFormRef.resetFields()
     },
+
     // 点击按钮，添加参数
     addParams() {
       // 验证环节
