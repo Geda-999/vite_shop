@@ -60,8 +60,8 @@
                                 <!-- v-if是控制文本框切换与显示 v-model是双向判定了数据 -->
                                 <el-input
                                     class="input-new-tag w-32"
-                                    v-if="inputVisible"
-                                    v-model="inputValue"
+                                    v-if="scope.row.inputVisible"
+                                    v-model="scope.row.inputValue"
                                     ref="saveTagInput"
                                     size="small"
                                     @keyup.enter.native="handleInputConfirm"
@@ -70,7 +70,7 @@
                                 </el-input>
 
                                 <!-- 添加的按钮 -->
-                                <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                                <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
                             </template>
                         </el-table-column>
                         <!-- 索引列 -->
@@ -219,13 +219,12 @@ export default {
             trigger: 'blur'
           }
         ]
-      },
+      }
 
       // 控制按钮与文本框的切换显示
-      inputVisible: false,
-
+      //   inputVisible: false,
       // 文本框中输入的内容 默认为空
-      inputValue: ''
+      //   inputValue: ''
     }
   },
   created() {
@@ -307,6 +306,11 @@ export default {
       // 哪如果他不为空就直接【item.attr_vals.split(' ')】分割
       // 如果他为空字符串，哪肯定返回的是 直接返回空白了数组就行了
         item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+
+        // 控制文本框的显示与隐藏
+        item.inputVisible = false
+        // 文本框中输入的值
+        item.inputValue = ''
       })
 
       console.log(res.data) // 这个打印的是数组
@@ -490,8 +494,8 @@ export default {
     },
 
     // 点击按钮，展示文本输入框
-    showInput() {
-      this.inputVisible = true
+    showInput(row) {
+      row.inputVisible = true
     }
   },
 
