@@ -6,7 +6,7 @@
       <img src="../assets/heima.png" alt="">
       <span class="ml-4 text-xl text-pink-100">电商后台管理系统</span>
     </div>
-    <el-button type="info" @click="logout">退出</el-button>
+    <el-button class="h-10 mt-3" type="info" @click="logout">退出</el-button>
   </el-header>
   <!-- 页面主体 -->
   <el-container>
