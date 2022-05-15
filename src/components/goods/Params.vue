@@ -54,7 +54,7 @@
                             <!-- 数组：scope.row 是这一行数据这一行数据身上有个属性叫attr_vals -->
                             <template slot-scope="scope">
                                 <!-- 循环渲染Tag标签 -->
-                                <el-tag class="m-3" v-for="(item, i) in scope.row.attr_vals" :key="i" closable>{{ item }}</el-tag>
+                                <el-tag class="m-3" v-for="(item, i) in scope.row.attr_vals" :key="i" closable @close="handleClose(i, scope.row)">{{ item }}</el-tag>
 
                                 <!-- 输入的文本框 -->
                                 <!-- v-if是控制文本框切换与显示 v-model是双向判定了数据 -->
@@ -266,6 +266,8 @@ export default {
     // 证明选中的不是三级分类
       if (this.selectedCateKeys.length !== 3) {
         this.selectedCateKeys = [] // 清空数组
+        this.manyTableData = [] // 把不必要的id清空
+        this.onlyTableData = [] // 把不必要的id清空
         return
       }
 
@@ -519,6 +521,13 @@ export default {
 
         // 发起请求，把数据保存到数据库中
         // 需要发起请求，保存这次操作
+        // 调用下面的 同时把咋们的row 给他传进去
+        this.saveAttrVals(row)
+    },
+
+    // 将对 attr_vals 的操作，保存到数据库
+    async saveAttrVals(row) {
+        // 需要发起请求，保存这次操作
         const { data:res } = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,
           { // 携带请求体
             attr_name: row.attr_name, // attr_name新属性的名字
@@ -547,6 +556,18 @@ export default {
         // 通过$refs的形式 获取到了input输入框dom对象 直接调用【focus】
         this.$refs.saveTagInput.$refs.input.focus()
       })
+    },
+
+    // 删除对应的参数可选项
+    handleClose(i, row) {
+      // 可以在attr_vals 通过【splice】进行删除的操作 
+      row.attr_vals.splice(i ,1)
+
+      // 调用上面的 同时把咋们的row 给他传进去
+      this.saveAttrVals(row)
+
+      //splice 会修改原始数组，所以咋们接下来
+      // 可以把咋们这次的操作保存到数据库中 就行了
     }
   },
 
