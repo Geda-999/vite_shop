@@ -1,42 +1,7 @@
-# vue_shop
+# Vue 3 + Vite
 
-> 这是商品管理系统项目
+This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-```
-@author: Hliushi
-@date:   2021年7月31日19:51:12
-```
+## Recommended IDE Setup
 
-## Project setup
-
-```bash
-npm install
-
-yarn
-```
-
-### Compiles and hot-reloads for development
-
-```bash
-npm run serve
-
-yarn serve
-```
-
-### Compiles and minifies for production
-
-```bash
-npm run build
-
-yarn build
-```
-
-### Lints and fixes files
-
-```bash
-npm run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)

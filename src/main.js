@@ -1,9 +1,13 @@
 /* eslint-disable no-multiple-empty-lines */
 
 import Vue from 'vue'
+
+// 全局引入UI库
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue'
 import router from './router'
-import './plugins/element.js'
+// import './plugins/element.js'
 // 导入全局样式
 import './assets/css/global.css'
 import './assets/css/Tailwind.css'
@@ -34,6 +38,8 @@ Vue.config.productionTip = false
 
 // 全局注册
 Vue.component('tree-table', TreeTable)
+// 全局引入UI库
+Vue.use(ElementUI);
 
 new Vue({
   router,
