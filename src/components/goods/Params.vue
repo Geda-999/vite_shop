@@ -64,8 +64,8 @@
                                     v-model="scope.row.inputValue"
                                     ref="saveTagInput"
                                     size="small"
-                                    @keyup.enter.native="handleInputConfirm"
-                                    @blur="handleInputConfirm"
+                                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                                    @blur="handleInputConfirm(scope.row)"
                                     >
                                 </el-input>
 
@@ -489,8 +489,15 @@ export default {
     },
 
     // 文本框失去焦点，或摁下了，Enter都会触发
-    handleInputConfirm() {
-      console.log('ok')
+    handleInputConfirm(row) {
+      // console.log('ok')
+
+      if (row.inputValue.trim().length === 0) {
+        row.inputValue = ''
+        row.inputVisible = false
+      }
+
+      // 如果没有return，则证明输入的内容，需要做后续的处理
     },
 
     // 点击按钮，展示文本输入框
