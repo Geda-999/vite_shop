@@ -31,14 +31,24 @@
       <el-table :data="goodsList" border stripe>
         <!-- 这是索引列 -->
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="goods_name" label="商品名称"> </el-table-column>
-        <el-table-column prop="goods_price" label="商品价格(元)" width="120px"> </el-table-column>
-        <el-table-column prop="goods_weight" label="商品重量" width="95px"> </el-table-column>
-        <el-table-column prop="add_time" label="创建时间" width="140px"> </el-table-column>
+        <el-table-column prop="goods_name" label="商品名称"></el-table-column>
+        <el-table-column prop="goods_price" label="商品价格(元)" width="120px"></el-table-column>
+        <el-table-column prop="goods_weight" label="商品重量" width="95px"></el-table-column>
+        <el-table-column prop="add_time" label="创建时间" width="170px">
+          <!-- 作用域插槽  scope来接收插槽里面的数据 -->
+          <template slot-scope="scope">
+            <!-- 接到数据之后 咋们希望将时间过滤 -->
+            <!-- scope.row是这一行的数据 add_time是咋们添加的时间 用|调用全局注入时间过滤器  -->
+            {{ scope.row.add_time | dateFormat }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="130px">
           <!-- 作用域插槽 -->
+          <!-- scope来接收这一行的数据 -->
           <template slot-scope="scope">
+            <!-- 编辑按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <!-- 删除按钮 -->
             <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
           </template>
         </el-table-column>
@@ -53,7 +63,7 @@ export default {
     return {
       // 查询参数对象
       queryInfo: {
-        query: "", // 就你输入些搜索的关键字
+        query: '', // 就你输入些搜索的关键字
         pagenum: 1, // 当前页码数
         pagesize: 10, // 每页显示多少条数据
       },
@@ -70,18 +80,18 @@ export default {
     // 根据分页获取对应的商品列表
     async getGoodsList() {
       // 通过this.$http 发起get请求
-      const { data: res } = await this.$http.get("goods", {
+      const { data: res } = await this.$http.get('goods', {
         params: this.queryInfo,
       })
 
       // 判断环节
       if (res.meta.status !== 200) {
         //   如果失败就提示以下内容
-        return this.$message.error("获取商品列表失败！")
+        return this.$message.error('获取商品列表失败！')
       }
 
       // 如果没有return出去就成功了提示
-      this.$message.success("获取商品列表成功！")
+      this.$message.success('获取商品列表成功！')
 
       // 打印当前所获取到的数据
       console.log(res.data)
