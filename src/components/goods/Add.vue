@@ -135,6 +135,13 @@ export default {
     // 级联选择器 选中项 变化，会触发这个函数
     handleChange() {
       console.log(this.addForm.goods_cat)
+
+      // 如果不等于3的话 那就证明选中的不是三级分类
+      // 不等于3就直接清空
+      // 等于3就不做任何操作
+      if (this.addForm.goods_cat.length !== 3) {
+        this.addForm.goods_cat = [] // 清空数组
+      }
     },
   },
 }
