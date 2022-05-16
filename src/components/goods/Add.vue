@@ -28,13 +28,18 @@
       <!-- tab栏区域 -->
       <!-- v-model判定到 步骤条 :active身上 从而来获取联动信息  -->
       <!-- name="0"就是代码 步骤条 里的第一个 -->
-      <el-tabs v-model="activeIndex" :tab-position="'left'" style="height: 200px">
-        <el-tab-pane label="基本信息" name="0">基本信息</el-tab-pane>
-        <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
-        <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
-        <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
-        <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
-      </el-tabs>
+      <!-- 一个大表单 包裹的 tab栏 -->
+      <!-- :model="addForm"这是添加商品的表单 -->
+      <!-- :rules="rules"这是验证规则 -->
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
+        <el-tabs v-model="activeIndex" :tab-position="'left'" style="height: 200px">
+          <el-tab-pane label="基本信息" name="0">基本信息</el-tab-pane>
+          <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
+          <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
+          <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+        </el-tabs>
+      </el-form>
     </el-card>
   </div>
 </template>
@@ -47,11 +52,19 @@ export default {
     return {
       // 商品添加-实现步骤条和ab栏的数据联动效果
       activeIndex: '0',
+
+      //添加商品的表单数据对象
+      addForm: {},
+
+      // 表单验证规则
+      addFormRules: {},
     }
   },
   // 这是生命周期函数
   created() {},
+
   // 所有的事件处理函数 他是一个对象
+  methods: {},
 }
 </script>
 
