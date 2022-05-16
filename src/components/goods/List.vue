@@ -14,8 +14,9 @@
         <!-- 这是第一列 -->
         <!-- span这是站了8个位置 -->
         <el-col :span="8">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <!-- clearable是否可清空  clear触发事件 再调用getGoodsList重新获取数据  -->
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getGoodsList">
+            <el-button slot="append" icon="el-icon-search" @click="getGoodsList"></el-button>
           </el-input>
         </el-col>
         <!-- 这是第二列 -->
