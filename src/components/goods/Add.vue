@@ -52,6 +52,10 @@
               <!-- v-model这是输入框 输入的值双向判定到【:model="addForm"】某个属性上 属性名不要乱写 -->
               <el-input v-model="addForm.goods_number" type="number"></el-input>
             </el-form-item>
+            <el-form-item label="商品分类" prop="goods_cat">
+              <!-- options这个是数据源头 就是定义在data中的【cateList: [],】 -->
+              <el-cascader expand-trigger="hover" :props="cateProps" :options="cateList" v-model="addForm.goods_cat" @change="handleChange"></el-cascader>
+            </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
           <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
@@ -78,6 +82,7 @@ export default {
         goods_price: '', // 商品价格
         goods_weight: '', // 商品重量
         goods_number: '', //商品数量
+        goods_cat: [], // 商品所属的分类数组
       },
 
       // 表单验证规则
@@ -87,10 +92,18 @@ export default {
         goods_price: [{ required: true, message: '请输入商品价格', trigger: 'blur' }],
         goods_weight: [{ required: true, message: '请输入商品重量', trigger: 'blur' }],
         goods_number: [{ required: true, message: '请输入商品数量', trigger: 'blur' }],
+        goods_cat: [{ required: true, message: '请选择商品分类', trigger: 'blur' }],
       },
 
       // 获取所有商品分类列表
       cateList: [],
+
+      // 级联选择框的配置对象
+      cateProps: {
+        value: 'cat_id', // 指定咋们选中的那个值   【咋们通过cat_id来做那个值】
+        label: 'cat_name', // 指定你所看到那个名称 【咋们通过cat_name来做那个名称】
+        children: 'children', // 父子节点的嵌套属性 【咋们通过children来做那个名称】
+      },
     }
   },
   // 这是生命周期函数
@@ -118,6 +131,10 @@ export default {
 
       // 打印出来所有商品数据
       console.log(this.cateList)
+    },
+    // 级联选择器 选中项 变化，会触发这个函数
+    handleChange() {
+      console.log(this.addForm.goods_cat)
     },
   },
 }
