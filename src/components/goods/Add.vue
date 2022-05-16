@@ -63,13 +63,19 @@
             <!-- 渲染表单的Item项 -->
             <el-form-item :label="item.attr_name" v-for="item in manyTableDta" :key="item.attr_id">
               <!-- 这是复选框组 -->
-              <!-- 注意：数据是从res.data.forEach拿的哦 -->
+              <!-- 注意：数据是从res.data.forEach里面的 if 拿的哦 -->
               <el-checkbox-group v-model="item.attr_vals">
                 <el-checkbox v-for="(cb, i) in item.attr_vals" :key="i" :label="cb" border></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
+          <el-tab-pane label="商品属性" name="2">
+            <!-- Form 表单由输入框 -->
+            <!-- 注意：数据是从res.data.forEach里面的 else if 拿的哦 -->
+            <el-form-item :label="item.attr_name" v-for="item in onlyTableDta" :key="item.attr_id">
+              <el-input v-model="item.attr_vals" size="normal"></el-input>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
         </el-tabs>
