@@ -32,8 +32,9 @@
       <!-- :model="addForm"这是添加商品的表单 -->
       <!-- :rules="rules"这是验证规则 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
-        <!-- before-leave切换标签之前的钩子，若返回 false 或者返回 Promise 且被 reject，则阻止切换。 -->
-        <el-tabs v-model="activeIndex" :tab-position="'left'" :before-leave="beforeTabLeave">
+        <!-- before-leave 切换标签之前的钩子，若返回 false 或者返回 Promise 且被 reject，则阻止切换。 -->
+        <!-- tab-click 这是tab 被选中时触发 -->
+        <el-tabs v-model="activeIndex" :tab-position="'left'" :before-leave="beforeTabLeave" @tab-click="tabClicked">
           <el-tab-pane label="基本信息" name="0">
             <!-- 这是表单的i项 -->
             <!-- label这是你所看到的标题名称  prop这是表单的校验规则 -->
@@ -105,6 +106,8 @@ export default {
         label: 'cat_name', // 指定你所看到那个名称 【咋们通过cat_name来做那个名称】
         children: 'children', // 父子节点的嵌套属性 【咋们通过children来做那个名称】
       },
+      //   动态参数表单数据
+      manyTableDta: [],
     }
   },
   // 这是生命周期函数
@@ -144,6 +147,7 @@ export default {
         this.addForm.goods_cat = [] // 清空数组
       }
     },
+    // 切换标签之前的钩子
     beforeTabLeave(activeName, oldActiveName) {
       //   console.log(`即将离开的标签页名字是：${oldActiveName}`)
       //   console.log(`即将进入的标签页名字是：${activeName}`)
@@ -156,6 +160,69 @@ export default {
         this.$message.error('请选择商品分类！')
         return false
       }
+    },
+    // tab 被选中时触发
+    async tabClicked() {
+      // 是把当前激活的那个index给他打印出来
+      //   console.log(this.activeIndex)
+
+      /*
+            这是判断逻辑
+            如果咋们当前了name名称【activeIndex】等于1的话证明你点进了商品参数面板，那就立即发起动态参数的数据请求
+      */
+
+      // 证明访问的是动态参数面板
+      // 如果this.activeIndex 等于字符串 1 的话 证明你访问的是动态参数面板
+      if (this.activeIndex === '1') {
+        // console.log(动态参数面板)
+
+        // 成功可以访问到动态参数面板
+        // 就可以发起请求了
+        // /:id/这个是咋们的表单数据对象
+        // /:id/已经被咋们设计成计算属性了
+        // 要写这么长在这里就不太合理 然后把【this.addForm.goods_cat[2]】变成【this.cateId】
+        const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, {
+          // 哪分类Id指定成功之后 咋们需要 通过get了方式服务器发送一个参数
+          // 那这个参数叫什么呢 sel 他的值是 many 代表咋们要获取动态参数的列表数据
+          params: { sel: 'many' },
+        })
+
+        //   那么接收完上面的请求 之后 接下来 可以做一个判断啦
+
+        // 如果这res.meta.status 不等于200的话 那就获取数据失败了
+        if (res.meta.status !== 200) {
+          // 直接return一个$message 提示他
+          return this.$message.error('动态参数列表失败！')
+        }
+
+        // 哪如果没有return出去 哪证明获取的数据成功啦
+        console.log(res.data)
+
+        /*
+            哪此时在终端中打印 当前分类下对应 动态参数 数据列表
+            那接下来 拿到 数据之后 咋们应该把这些数据啊
+            保存到data中身上 从而共咋们页面使用 和 渲染
+        */
+
+        // 哪直接赋值就行了【manyTableDta】一定要定义在data节点中哦！！！
+        this.manyTableDta = res.data
+      }
+    },
+  },
+  // 计算属性
+  //  computed指向一个对象
+  computed: {
+    // 其中定义一个计算属性叫做【cateId】
+    cateId() {
+      // 咋们在这做一个判断啊
+      // 如果this.addForm.goods_cat.length等于3了，那就证明咋们包含的3级商品分类
+      if (this.addForm.goods_cat.length === 3) {
+        //  咋们直接return 【this.addForm.goods_cat】这是一个数组，把索引为[2] 直接return出去就行了
+        return this.addForm.goods_cat[2]
+      }
+
+      // 哪如果不等于3的话 那肯定不会走if 咋们就直接return一个null证明你没有三级分类的Id
+      return null
     },
   },
 }
