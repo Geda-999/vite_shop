@@ -13,10 +13,14 @@
       <el-alert title="添加商品信息" type="info" center show-icon :closable="false"></el-alert>
 
       <!-- 步骤条区域 -->
-      <el-steps :space="200" :active="1" finish-status="success">
-        <el-step title="已完成"></el-step>
-        <el-step title="进行中"></el-step>
-        <el-step title="步骤 3"></el-step>
+      <!-- active这个不要写死他 要判定到data中才灵活 -->
+      <el-steps :space="200" :active="activeIndex" finish-status="success" align-center>
+        <el-step title="基本信息"></el-step>
+        <el-step title="商品参数"></el-step>
+        <el-step title="商品属性"></el-step>
+        <el-step title="商品图片"></el-step>
+        <el-step title="商品内容"></el-step>
+        <el-step title="完成"></el-step>
       </el-steps>
     </el-card>
   </div>
@@ -27,7 +31,9 @@
 export default {
   // 这是私有数据
   data() {
-    return {}
+    return {
+      activeIndex: 0,
+    }
   },
   // 这是生命周期函数
   created() {},
