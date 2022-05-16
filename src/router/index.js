@@ -10,57 +10,62 @@ import Rights from '../components/power/Rights.vue'
 import Roles from '../components/power/Roles.vue'
 import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
-import GoodsList from "../components/goods/List.vue";
+import GoodsList from '../components/goods/List.vue'
+import Add from '../components/goods/Add.vue'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
     {
-      path: "/",
-      redirect: "/login",
+      path: '/',
+      redirect: '/login',
     },
     {
-      path: "/login",
+      path: '/login',
       component: Login,
     },
     {
-      path: "/home",
+      path: '/home',
       component: Home,
-      redirect: "/wlecome",
+      redirect: '/wlecome',
       children: [
         {
-          path: "/wlecome",
+          path: '/wlecome',
           component: Wlecome,
         },
         {
-          path: "/users",
+          path: '/users',
           component: Users,
         },
         {
-          path: "/rights",
+          path: '/rights',
           component: Rights,
         },
         {
-          path: "/roles",
+          path: '/roles',
           component: Roles,
         },
         {
-          path: "/categories",
+          path: '/categories',
           component: Cate,
         },
         {
-          path: "/params", // 路径
+          path: '/params', // 路径
           component: Params, // 组件
         },
         {
-          path: "/goods", // 路径
+          path: '/goods', // 路径
           component: GoodsList, // 组件
+        },
+        {
+          path: '/goods/add', // 路径
+          component: Add, // 组件
         },
       ],
     },
   ],
-});
+})
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {

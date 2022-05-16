@@ -22,7 +22,7 @@
         <!-- 这是第二列 -->
         <!-- span这是站了4个位置 -->
         <el-col :span="4">
-          <el-button type="primary">添加商品</el-button>
+          <el-button type="primary" @click="goAddpage">添加商品</el-button>
         </el-col>
       </el-row>
 
@@ -164,6 +164,13 @@ export default {
 
       // 并且刷新数据列表
       this.getGoodsList()
+    },
+    // 添加商品路由跳转的方法
+    goAddpage() {
+      // 调用goAddpage  通过this.$router 这么一个路由导航对象
+      // 调用 push()函数跳转到指定的路由页面
+      // push要接收一个路径 这样就可以返回到/goods/add 从而展示出添加的组件页面
+      this.$router.push('/goods/add')
     },
   },
 }
