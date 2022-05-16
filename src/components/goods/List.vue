@@ -28,7 +28,7 @@
       <!-- table 表格区域 -->
       <!-- 表格 :data="goodsList"这是数据源 -->
       <!--  border这是边框  stripe这是隔行变色 -->
-      <el-table :data="goodsList" border stripe>
+      <el-table class="my-4" :data="goodsList" border stripe>
         <!-- 这是索引列 -->
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="goods_name" label="商品名称"></el-table-column>
@@ -53,6 +53,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="queryInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        background></el-pagination>
     </el-card>
   </div>
 </template>
@@ -101,6 +112,22 @@ export default {
       // 注意： 获取所有商品 一定要先赋值到data中共页面使用
       this.goodsList = res.data.goods
       this.total = res.data.total
+    },
+    // 点击分页切换功能
+    handleSizeChange(newSize) {
+      // newSize赋值 并保存到data里面
+      this.queryInfo.pagesize = newSize
+
+      // 调用 重新获取一下数据
+      this.getGoodsList()
+    },
+    // 当前的页码值点击发生的变化
+    handleCurrentChange(newPage) {
+      // newPage赋值 并保存到data里面
+      this.queryInfo.pagenum = newPage
+
+      // 调用 重新获取一下数据
+      this.getGoodsList()
     },
   },
 }
