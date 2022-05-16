@@ -32,8 +32,27 @@
       <!-- :model="addForm"这是添加商品的表单 -->
       <!-- :rules="rules"这是验证规则 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
-        <el-tabs v-model="activeIndex" :tab-position="'left'" style="height: 200px">
-          <el-tab-pane label="基本信息" name="0">基本信息</el-tab-pane>
+        <el-tabs v-model="activeIndex" :tab-position="'left'">
+          <el-tab-pane label="基本信息" name="0">
+            <!-- 这是表单的i项 -->
+            <!-- label这是你所看到的标题名称  prop这是表单的校验规则 -->
+            <el-form-item label="商品名称" prop="goods_name">
+              <!-- v-model这是输入框 输入的值双向判定到【:model="addForm"】某个属性上 属性名不要乱写 -->
+              <el-input v-model="addForm.goods_name"></el-input>
+            </el-form-item>
+            <el-form-item label="商品价格" prop="goods_price">
+              <!-- v-model这是输入框 输入的值双向判定到【:model="addForm"】某个属性上 属性名不要乱写 -->
+              <el-input v-model="addForm.goods_price" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="商品重量" prop="goods_weight">
+              <!-- v-model这是输入框 输入的值双向判定到【:model="addForm"】某个属性上 属性名不要乱写 -->
+              <el-input v-model="addForm.goods_weight" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="商品数量" prop="goods_number">
+              <!-- v-model这是输入框 输入的值双向判定到【:model="addForm"】某个属性上 属性名不要乱写 -->
+              <el-input v-model="addForm.goods_number" type="number"></el-input>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
           <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
           <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
@@ -54,10 +73,21 @@ export default {
       activeIndex: '0',
 
       //添加商品的表单数据对象
-      addForm: {},
+      addForm: {
+        goods_name: '', // 商品名称
+        goods_price: '', // 商品价格
+        goods_weight: '', // 商品重量
+        goods_number: '', //商品数量
+      },
 
       // 表单验证规则
-      addFormRules: {},
+      addFormRules: {
+        // 商品名称做一个校验规则
+        goods_name: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
+        goods_price: [{ required: true, message: '请输入商品价格', trigger: 'blur' }],
+        goods_weight: [{ required: true, message: '请输入商品重量', trigger: 'blur' }],
+        goods_number: [{ required: true, message: '请输入商品数量', trigger: 'blur' }],
+      },
     }
   },
   // 这是生命周期函数
