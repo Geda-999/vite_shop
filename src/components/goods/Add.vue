@@ -59,7 +59,16 @@
               <el-cascader expand-trigger="hover" :props="cateProps" :options="cateList" v-model="addForm.goods_cat" @change="handleChange"></el-cascader>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
+          <el-tab-pane label="商品参数" name="1">
+            <!-- 渲染表单的Item项 -->
+            <el-form-item :label="item.attr_name" v-for="item in manyTableDta" :key="item.attr_id">
+              <!-- 这是复选框组 -->
+              <!-- 注意：数据是从res.data.forEach拿的哦 -->
+              <el-checkbox-group v-model="item.attr_vals">
+                <el-checkbox v-for="(cb, i) in item.attr_vals" :key="i" :label="cb" border></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
           <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
@@ -203,6 +212,32 @@ export default {
             那接下来 拿到 数据之后 咋们应该把这些数据啊
             保存到data中身上 从而共咋们页面使用 和 渲染
         */
+
+        // 字符串变数组环节来啦✨🚀✨
+        // 在赋值之前将他们的每一项都做一次循环
+        res.data.forEach(item => {
+          // 每循环一次都会拿到一个item项
+          // 咋们每拿到一个item项 就将他们了【item.attr_vals 】用【split】做分割 里面写一个空格
+          // 哪接下来他的返回值 是一个数组 我们需要重新给当前【item.attr_vals 】给他赋值一下
+          // 已经过这个环节他就变成数组了
+          // 我们先【item.attr_vals】这个字符串做一个判断
+          // 哪如果他不为空就直接【item.attr_vals.split(' ')】分割
+
+          // 哪在 split 之前啊 先判断一下他 是否为空字符串
+          // 如果他为空字符串 那么咋们没必要调用 split 直接返回空数组就行了
+          // 所以在这写一个三元表达式
+          // item.attr_vals.length 是否等于0
+          // 如果等于0 的话 咋们直接返回一个空数组
+          // 否则先做一个分割 在把分割后的数组 在返回
+          // 将返回的数组 再重新 赋值 给item.attr_vals
+          // 那已过 forEach 之后 每一项身上 attr_vals 就从字符串 变成了 数组啦
+          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(' ')
+
+          // 控制文本框的显示与隐藏
+          item.inputVisible = false
+          // 文本框中输入的值
+          item.inputValue = ''
+        })
 
         // 哪直接赋值就行了【manyTableDta】一定要定义在data节点中哦！！！
         this.manyTableDta = res.data
