@@ -115,8 +115,10 @@ export default {
         label: 'cat_name', // 指定你所看到那个名称 【咋们通过cat_name来做那个名称】
         children: 'children', // 父子节点的嵌套属性 【咋们通过children来做那个名称】
       },
-      //   动态参数表单数据
+      // 动态参数表单数据
       manyTableDta: [],
+      // 静态属性列表数据
+      onlyTableDta: [],
     }
   },
   // 这是生命周期函数
@@ -242,6 +244,28 @@ export default {
         // 哪直接赋值就行了【manyTableDta】一定要定义在data节点中哦！！！
         this.manyTableDta = res.data
       }
+      // 如果 this.activeIndex 等于字符串 2 的话 证明你访问的是静态属性面板
+      else if (this.activeIndex === '2') {
+        // /:id/已经被咋们设计成计算属性了 然后把【this.addForm.goods_cat[2]】变成【this.cateId】
+        const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`, {
+          // 哪分类Id指定成功之后 咋们需要 通过get了方式服务器发送一个参数
+          // 那这个参数叫什么呢 sel 他的值是 only 代表咋们要获取动态参数的列表数据
+          params: { sel: 'only' },
+        })
+
+        // 那么接收完上面的请求 之后 接下来 可以做一个判断啦
+        // 如果这res.meta.status 不等于200的话 那就获取数据失败了
+        if (res.meta.status !== 200) {
+          // 直接return一个$message 提示他
+          this.$message.error('获取静态属性失败！')
+        }
+
+        // 哪如果没有return出去 哪证明获取的数据成功啦
+        console.log(res.data)
+
+        // 哪直接赋值就行了【onlyTableDta】一定要定义在data节点中哦！！！
+        this.onlyTableDta = res.data
+      }
     },
   },
   // 计算属性
@@ -263,4 +287,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.el-checkbox {
+  margin: 0 10px 0 0 !important;
+}
+</style>
