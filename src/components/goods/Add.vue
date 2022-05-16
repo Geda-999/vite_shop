@@ -88,13 +88,38 @@ export default {
         goods_weight: [{ required: true, message: '请输入商品重量', trigger: 'blur' }],
         goods_number: [{ required: true, message: '请输入商品数量', trigger: 'blur' }],
       },
+
+      // 获取所有商品分类列表
+      cateList: [],
     }
   },
   // 这是生命周期函数
-  created() {},
+  created() {
+    // 咋们来调用一个方法
+    this.getCateList()
+  },
 
   // 所有的事件处理函数 他是一个对象
-  methods: {},
+  methods: {
+    // 定义一个方法
+    // 获取所有商品分类数据
+    async getCateList() {
+      // 通过this.$http 发起get请求
+      const { data: res } = await this.$http.get('categories')
+
+      if (res.meta.status !== 200) {
+        // 如果失败就提示以下内容
+        return this.$message.error('获取商品分类数据失败！')
+      }
+
+      // 成功之后
+      // 注意： 获取所有商品 一定要先赋值到data中共页面使用 渲染
+      this.cateList = res.data
+
+      // 打印出来所有商品数据
+      console.log(this.cateList)
+    },
+  },
 }
 </script>
 
