@@ -50,7 +50,7 @@
             <!-- 编辑按钮 -->
             <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
             <!-- 删除按钮 -->
-            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeById(scope.row.goods_id)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -128,6 +128,41 @@ export default {
       this.queryInfo.pagenum = newPage
 
       // 调用 重新获取一下数据
+      this.getGoodsList()
+    },
+    async removeById(id) {
+      // 首先弹出提一下是否要删除
+      // 这下就不用【结构重命名】了因为他返回是一个文本
+      // 咋们就可以【confirmResult】来接收
+      const confirmResult = await this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).catch(err => err) // 那如果他取消了，那咋们通过点【.catch】捕或一下用户取消的行为 并且将错取消结果给他return出去
+
+      // 如果confirmResult 不等于 字符串confirm 的话 证明用户不想删除
+      // 那么咋们直接return出去 并且info信息提示用户
+      if (confirmResult !== 'confirm') {
+        // 直接return出去并且提示一个用户
+        return this.$message.info('已取消删除！')
+      }
+
+      // 哪如果没有取消的话 就不会return出去
+      // 不会走删除的业务逻辑
+
+      //   给服务器发起请求 请求路径goods/:id  请求方法：delete
+      const { data: res } = await this.$http.delete(`goods/${id}`) // 注意：${id} 一定要跟这个一直id async removeById(id)
+
+      //   判断环节来啦！！！
+      if (res.meta.status !== 200) {
+        // 如果 不等于200就提示以下内容
+        return this.$message.error('删除失败！')
+      }
+
+      // 如果没有return出去就提示成功了
+      this.$message.success('删除成功！')
+
+      // 并且刷新数据列表
       this.getGoodsList()
     },
   },
