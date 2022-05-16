@@ -32,7 +32,8 @@
       <!-- :model="addForm"这是添加商品的表单 -->
       <!-- :rules="rules"这是验证规则 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
-        <el-tabs v-model="activeIndex" :tab-position="'left'">
+        <!-- before-leave切换标签之前的钩子，若返回 false 或者返回 Promise 且被 reject，则阻止切换。 -->
+        <el-tabs v-model="activeIndex" :tab-position="'left'" :before-leave="beforeTabLeave">
           <el-tab-pane label="基本信息" name="0">
             <!-- 这是表单的i项 -->
             <!-- label这是你所看到的标题名称  prop这是表单的校验规则 -->
@@ -141,6 +142,19 @@ export default {
       // 等于3就不做任何操作
       if (this.addForm.goods_cat.length !== 3) {
         this.addForm.goods_cat = [] // 清空数组
+      }
+    },
+    beforeTabLeave(activeName, oldActiveName) {
+      //   console.log(`即将离开的标签页名字是：${oldActiveName}`)
+      //   console.log(`即将进入的标签页名字是：${activeName}`)
+      //   return false
+
+      // 判断 即将离开的标签页名字是 是否等于零 同时你选中了商品分类了length长度是否等于3
+      // 如果不等于3的话 那就直接return出去 如果等于3就发生切换就好的
+      if (oldActiveName === '0' && this.addForm.goods_cat.length !== 3) {
+        // 如果失败就提示以下内容
+        this.$message.error('请选择商品分类！')
+        return false
       }
     },
   },
