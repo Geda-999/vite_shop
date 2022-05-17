@@ -110,6 +110,8 @@
 </template>
 
 <script>
+// lodash 一般收下划线来接收
+import _ from 'lodash'
 // 这是行为区域
 export default {
   // 这是私有数据
@@ -278,6 +280,7 @@ export default {
           // 否则先做一个分割 在把分割后的数组 在返回
           // 将返回的数组 再重新 赋值 给item.attr_vals
           // 那已过 forEach 之后 每一项身上 attr_vals 就从字符串 变成了 数组啦
+          // 字符串 变成 数组
           item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(' ')
 
           // 控制文本框的显示与隐藏
@@ -359,6 +362,27 @@ export default {
         }
 
         // 执行添加的业务逻辑
+        // 数组 变成 字符串
+
+        // Join，程序语言，字符串，指返回一个字符串，此字符串由包含在数组中的许多子字符串联接创建。
+
+        // 这种会报错了 要做一层深拷贝才行 因为级联选择器他是要数组，你就要字符串，这就出现矛盾了。这才要做一层深拷贝啊
+        // this.addForm.goods_cat = this.addForm.goods_cat.join(',')
+
+        // 咋们应该在拼接之前 先把addForm先拷贝出现
+        // lodash插件 cloneDeep(obj)
+        // join之前做一层深拷贝
+        // cloneDeep 要深拷贝谁呢 就是当前组件身上的一个addForm
+        // 哪深拷贝的结果 会返回 全新的对象 咋们 可以用 等号来 赋值
+        // 定义一个常量叫form
+        // 注意：_.cloneDeep这是一个插件依赖包哦
+        const form = _.cloneDeep(this.addForm)
+
+        // 直接把form里面的goods_cat做拼接 并重新赋值给form.goods_cat
+        form.goods_cat = form.goods_cat.join(',')
+
+        // 咋们来打印一下处理过后了结果
+        console.log(form)
       })
     },
   },
