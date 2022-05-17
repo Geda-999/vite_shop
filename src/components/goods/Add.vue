@@ -89,7 +89,13 @@
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <!-- 富文本编辑器组件 -->
+            <quill-editor v-model="addForm.goods_introduce"></quill-editor>
+
+            <!--添加商品的按钮  -->
+            <el-button type="primary" class="mt-4" @click="add">添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
@@ -120,6 +126,7 @@ export default {
         goods_number: '', //商品数量
         goods_cat: [], // 商品所属的分类数组
         pics: [], // 图片的数组
+        goods_introduce: '', // 商品的详情描述
       },
 
       // 表单验证规则
@@ -339,6 +346,10 @@ export default {
       // 2、将图片信息对象，push 到 pics数组中
       this.addForm.pics.push(picInfo)
       // 那每追加一次 打印一下
+      console.log(this.addForm)
+    },
+    // 添加商品
+    add() {
       console.log(this.addForm)
     },
   },
