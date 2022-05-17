@@ -83,7 +83,9 @@
             <!-- on-remove 这个就图片右上角的叉号 事件处理函数 -->
             <!-- file-list 这个是指定文件列表了 然后我们不需要文件列表我就删除了 -->
             <!-- list-type	文件列表的类型 -->
-            <el-upload :action="uploadURL" :on-preview="handlePreview" :on-remove="handleRemove" list-type="picture">
+            <!-- headers  设置上传的请求头部 -->
+            <!-- on-success 文件上传成功时的钩子 上传图片成功就立即调佣这个事件处理函数 -->
+            <el-upload :action="uploadURL" :on-preview="handlePreview" :on-remove="handleRemove" list-type="picture" :headers="headerObj" :on-success="handleSuccess">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
@@ -110,6 +112,7 @@ export default {
         goods_weight: '', // 商品重量
         goods_number: '', //商品数量
         goods_cat: [], // 商品所属的分类数组
+        pics: [], // 图片的数组
       },
 
       // 表单验证规则
@@ -137,6 +140,12 @@ export default {
       onlyTableDta: [],
       // 上传图片的URL地址
       uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',
+      // 图片上传组件的headers请求头对象
+      headerObj: {
+        // 在这包含着验证Authorization
+        // 他的值在保存在sessionStorage 就是浏览器的数据库
+        Authorization: window.sessionStorage.getItem('token'),
+      },
     }
   },
   // 这是生命周期函数
@@ -289,6 +298,20 @@ export default {
     handlePreview() {},
     // 处理移除图片的操作
     handleRemove() {},
+
+    // 监听图片上传成功的事件
+    // 在这个事件中可以拿到response 就是服务器返回的数据对象
+    handleSuccess(response) {
+      console.log(response)
+      // 1、拼接得到一个图片信息对象
+      const picInfo = {
+        pic: response.data.tmp_path,
+      }
+      // 2、将图片信息对象，push 到 pics数组中
+      this.addForm.pics.push(picInfo)
+      // 那每追加一次 打印一下
+      console.log(this.addForm)
+    },
   },
   // 计算属性
   //  computed指向一个对象
