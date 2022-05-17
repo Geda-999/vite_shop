@@ -350,7 +350,16 @@ export default {
     },
     // 添加商品
     add() {
-      console.log(this.addForm)
+      //   console.log(this.addForm)
+      // 按钮的预验证方法
+      this.$refs.addFormRef.validate(valid => {
+        // 如果非valid 就预校验失败 就return出去
+        if (!valid) {
+          return this.$message.error('请填写必要的表单项！')
+        }
+
+        // 执行添加的业务逻辑
+      })
     },
   },
   // 计算属性
