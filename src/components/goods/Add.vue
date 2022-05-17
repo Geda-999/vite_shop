@@ -93,6 +93,13 @@
         </el-tabs>
       </el-form>
     </el-card>
+
+    <!-- 图片预览 对话框 -->
+    <!-- 那么什么时候去展示 这个预览窗口呢 -->
+    <!-- 那肯定是触发 咋们on-preview事件的时候 把咋们窗口给他展示出来 -->
+    <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%">
+      <img :src="previewPath" alt="" class="w-full" />
+    </el-dialog>
   </div>
 </template>
 
@@ -146,6 +153,10 @@ export default {
         // 他的值在保存在sessionStorage 就是浏览器的数据库
         Authorization: window.sessionStorage.getItem('token'),
       },
+      // 触发预览图片数据的时候 为他赋值
+      previewPath: '',
+      // 布尔值 默认是隐藏对话框
+      previewVisible: false,
     }
   },
   // 这是生命周期函数
@@ -295,7 +306,15 @@ export default {
       }
     },
     // 处理图片预览效果
-    handlePreview() {},
+    handlePreview(file) {
+      console.log(file)
+      // 给他赋值环节
+      // 赋值完毕之后 我们就可以 在页面上 去放一个对话框 从而展示出 对应的图片的
+      this.previewPath = file.response.data.url
+
+      // 上面的赋值完毕之后 就显示对话框 图片窗口里的数据出来
+      this.previewVisible = true
+    },
     // 处理移除图片的操作
     handleRemove(file) {
       //   console.log(file)
