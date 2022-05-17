@@ -129,6 +129,7 @@ export default {
         goods_cat: [], // 商品所属的分类数组
         pics: [], // 图片的数组
         goods_introduce: '', // 商品的详情描述
+        attrs: [], // 商品的参数 动态和静态
       },
 
       // 表单验证规则
@@ -362,7 +363,7 @@ export default {
         }
 
         // 执行添加的业务逻辑
-        // 数组 变成 字符串
+        // 数组 变成 字符串    goods_cat 里面的数组 要转成 字符串
 
         // Join，程序语言，字符串，指返回一个字符串，此字符串由包含在数组中的许多子字符串联接创建。
 
@@ -380,6 +381,36 @@ export default {
 
         // 直接把form里面的goods_cat做拼接 并重新赋值给form.goods_cat
         form.goods_cat = form.goods_cat.join(',')
+
+        // 处理动态参数
+        // forEach 拿到数组里面的 每一个动态参数项 item
+        // 只要拿到item项 他身上 藏很多个属性 咱们只需要两个
+        this.manyTableDta.forEach(item => {
+          // 咋们在创建一个新对象
+          // 这个newInfo将来是要push到this.addForm.attrs这个数组中的
+          const newInfo = {
+            // 两个属性 一个Id 一个value
+            attr_id: item.attr_id,
+            attr_value: item.attr_vals.join(' '), // attr_vals他只接收字符串 咋们要做join
+          }
+
+          this.addForm.attrs.push(newInfo)
+        })
+
+        // 处理静态属性
+        this.onlyTableDta.forEach(item => {
+          const newInfo = {
+            attr_id: item.attr_id,
+            attr_value: item.attr_vals, // 静态属性attr_vals本来就是个字符串
+          }
+
+          this.addForm.attrs.push(newInfo)
+        })
+
+        // 赋值操作
+        form.attrs = this.addForm.attrs
+
+        // 最终要提交给服务器是form
 
         // 咋们来打印一下处理过后了结果
         console.log(form)
