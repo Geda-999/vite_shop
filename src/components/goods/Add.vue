@@ -356,7 +356,8 @@ export default {
     add() {
       //   console.log(this.addForm)
       // 按钮的预验证方法
-      this.$refs.addFormRef.validate(valid => {
+      //   验证回调函数要加async
+      this.$refs.addFormRef.validate(async valid => {
         // 如果非valid 就预校验失败 就return出去
         if (!valid) {
           return this.$message.error('请填写必要的表单项！')
@@ -414,6 +415,20 @@ export default {
 
         // 咋们来打印一下处理过后了结果
         console.log(form)
+
+        // 发起请求添加商品
+        // 商品的名称，必须是唯一的
+        // this.$http.post(地址，服务器提交数据form表单)
+        const { data: res } = await this.$http.post('goods', form)
+
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加商品失败！')
+        }
+
+        this.$message.success('添加商品成功！')
+
+        // 编程式导航 跳转到商品列表页里面
+        this.$router.push('/goods')
       })
     },
   },
