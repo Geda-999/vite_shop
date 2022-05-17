@@ -76,7 +76,17 @@
               <el-input v-model="item.attr_vals" size="normal"></el-input>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
+          <el-tab-pane label="商品图片" name="3">
+            <!-- Upload 上传 -->
+            <!-- action 表示图片要上传到的后台api地址 -->
+            <!-- on-preview 这个属性时用来指定预览的事件了 就预览图片功能 -->
+            <!-- on-remove 这个就图片右上角的叉号 事件处理函数 -->
+            <!-- file-list 这个是指定文件列表了 然后我们不需要文件列表我就删除了 -->
+            <!-- list-type	文件列表的类型 -->
+            <el-upload :action="uploadURL" :on-preview="handlePreview" :on-remove="handleRemove" list-type="picture">
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
         </el-tabs>
       </el-form>
@@ -125,6 +135,8 @@ export default {
       manyTableDta: [],
       // 静态属性列表数据
       onlyTableDta: [],
+      // 上传图片的URL地址
+      uploadURL: 'http://127.0.0.1:8888/api/private/v1/upload',
     }
   },
   // 这是生命周期函数
@@ -273,6 +285,10 @@ export default {
         this.onlyTableDta = res.data
       }
     },
+    // 处理图片预览效果
+    handlePreview() {},
+    // 处理移除图片的操作
+    handleRemove() {},
   },
   // 计算属性
   //  computed指向一个对象
