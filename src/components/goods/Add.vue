@@ -297,7 +297,17 @@ export default {
     // 处理图片预览效果
     handlePreview() {},
     // 处理移除图片的操作
-    handleRemove() {},
+    handleRemove(file) {
+      //   console.log(file)
+      // 1、获取将要删除的图片临时路径
+      const filePath = file.response.data.tmp_path
+      // 2、从 pics 数组中，找到这个图片对应的索引值
+      const i = this.addForm.pics.findIndex(x => x.pic === filePath)
+      // 3、调用数组的 splice 方法，把图片信息对象，从 pics 数组中移除
+      this.addForm.pics.splice(i, 1)
+      // 删除完毕之后 打印一下
+      console.log(this.addForm)
+    },
 
     // 监听图片上传成功的事件
     // 在这个事件中可以拿到response 就是服务器返回的数据对象
