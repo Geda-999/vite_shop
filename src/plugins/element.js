@@ -78,7 +78,7 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
 } from 'element-ui'
 
 Vue.use(Pagination)
@@ -103,7 +103,6 @@ Vue.use(Switch)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(OptionGroup)
-
 
 Vue.use(Button)
 Vue.use(ButtonGroup)
